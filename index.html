@@ -165,9 +165,9 @@
       :class="tema === 'light' ? 'bg-paper-100 border-paper-200 text-ink-800' : 'bg-navy-800/50 border-navy-700 text-paper-50/80'">
       <svg class="w-4 h-4 text-gold-400 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
       <span>
-        Dados do snapshot: <strong x-text="formatarData(meta?.gerado_em)"></strong> ·
-        <strong x-text="stocksFiltradas.length"></strong> de <strong x-text="stocks.length"></strong> ações passaram nos filtros ·
-        <span class="opacity-70" x-text="'Fonte: ' + (meta?.fonte || '—')"></span>
+        Última apuração: <strong x-text="formatarData(meta?.gerado_em)"></strong> ·
+        <strong x-text="stocksFiltradas.length"></strong> de <strong x-text="stocks.length"></strong> ações aprovadas ·
+        <span class="opacity-70">Fontes oficiais: B3 · CVM · Fundamentus · Status Invest</span>
       </span>
     </div>
 
@@ -182,7 +182,7 @@
         </h2>
         <p class="text-sm text-paper-50/80 max-w-2xl">
           Ranking fundamentalista das <strong x-text="stocks.length"></strong> ações monitoradas,
-          com filtros de qualidade aplicados. Toque em um card para entender <em>por quê</em>.
+          com filtros de qualidade aplicados. Toque em um card para entender <em>o porquê</em>.
         </p>
         <div class="mt-4 flex flex-wrap gap-4 text-xs text-paper-50/70">
           <div><span class="opacity-60">Método:</span> <span class="text-gold-400 font-semibold" x-text="metodos[metodoAtivo].nome"></span></div>
@@ -202,8 +202,8 @@
           <svg class="w-4 h-4 opacity-50" fill="currentColor" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
         </summary>
         <div class="px-4 pb-4 text-sm space-y-2 opacity-80">
-          <p><strong>1. Score só compara quem está no mesmo setor.</strong> Um banco com P/L 8 não é "caro" como uma construtora com P/L 8 — as margens estruturais são diferentes.</p>
-          <p><strong>2. Os filtros de qualidade já eliminaram ações de risco:</strong> prejuízo, payout > 85%, e (futuramente) DL/EBITDA > 3×. As rejeitadas estão listadas com o motivo.</p>
+          <p><strong>1. Score só compara quem está no mesmo setor.</strong> Um banco com Preço/Lucro (P/L) 8 não é "caro" como uma construtora com Preço/Lucro 8 — as margens estruturais são diferentes.</p>
+          <p><strong>2. Os filtros de qualidade já eliminaram ações de risco:</strong> prejuízo, payout > 85% (exceto seguradoras, utilidades e telecom), e (futuramente) Dívida Líquida/EBITDA (DL/EBITDA) > 3×. As rejeitadas estão listadas com o motivo.</p>
           <p><strong>3. Score alto não é ordem de compra.</strong> É um ponto de partida. No detalhe de cada ação estão os "sinais de atenção".</p>
           <p><strong>4. Cíclicas mentem no pico do ciclo:</strong> Vale, Petrobras, Suzano parecem baratíssimas quando o preço da commodity está lá em cima — cuidado.</p>
         </div>
@@ -237,9 +237,9 @@
                       <span class="text-xs opacity-60 truncate" x-text="s.empresa"></span>
                     </div>
                     <div class="text-xs opacity-70 mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5">
-                      <span>P/L <strong x-text="fmt(s.p_l, 2)"></strong></span>
-                      <span>DY <strong x-text="fmtPct(s.dy)"></strong></span>
-                      <span>ROE <strong x-text="fmtPct(s.roe)"></strong></span>
+                      <span title="Preço/Lucro">Preço/Lucro <strong x-text="fmt(s.p_l, 2)"></strong></span>
+                      <span title="Dividend Yield">Dividend Yield <strong x-text="fmtPct(s.dy)"></strong></span>
+                      <span title="Return on Equity (retorno sobre patrimônio)">ROE <strong x-text="fmtPct(s.roe)"></strong></span>
                     </div>
                   </div>
                   <div class="text-right shrink-0">
@@ -299,11 +299,11 @@
                 <th class="p-3">#</th>
                 <th class="p-3">Ativo</th>
                 <th class="p-3 hidden sm:table-cell">Setor</th>
-                <th class="p-3 text-right">P/L</th>
-                <th class="p-3 text-right hidden md:table-cell">P/VP</th>
-                <th class="p-3 text-right">DY</th>
-                <th class="p-3 text-right hidden md:table-cell">ROE</th>
-                <th class="p-3 text-right hidden lg:table-cell">Payout</th>
+                <th class="p-3 text-right" title="Preço/Lucro">Preço/Lucro<br><span class="text-[10px] opacity-60">(P/L)</span></th>
+                <th class="p-3 text-right hidden md:table-cell" title="Preço/Valor Patrimonial">Preço/VP<br><span class="text-[10px] opacity-60">(P/VP)</span></th>
+                <th class="p-3 text-right" title="Dividend Yield">Dividend Yield<br><span class="text-[10px] opacity-60">(DY)</span></th>
+                <th class="p-3 text-right hidden md:table-cell" title="Return on Equity">Return on Equity<br><span class="text-[10px] opacity-60">(ROE)</span></th>
+                <th class="p-3 text-right hidden lg:table-cell" title="Proporção do lucro distribuída como dividendo">Payout<br><span class="text-[10px] opacity-60">(% do lucro)</span></th>
                 <th class="p-3 text-right">Score</th>
               </tr>
             </thead>
@@ -359,9 +359,9 @@
               <template x-for="linha in [
                 ['Setor', c => c.setor],
                 ['Preço', c => fmtR(c.preco)],
-                ['P/L', c => fmt(c.p_l, 2)],
+                ['Preço/Lucro (P/L)', c => fmt(c.p_l, 2)],
                 ['P/VP', c => fmt(c.p_vp, 2)],
-                ['DY', c => fmtPct(c.dy)],
+                ['Dividend Yield (DY)', c => fmtPct(c.dy)],
                 ['ROE', c => fmtPct(c.roe)],
                 ['Payout', c => fmtPct(c.payout)],
                 ['Score', c => fmt(c._score, 3)],
@@ -402,7 +402,7 @@
           <table class="w-full text-sm">
             <thead><tr class="text-left border-b" :class="tema === 'light' ? 'border-paper-200' : 'border-navy-700'">
               <th class="p-2">Ativo</th>
-              <th class="p-2 text-right">DY</th>
+              <th class="p-2 text-right">Dividend Yield</th>
               <th class="p-2 text-right">Peso %</th>
               <th class="p-2"></th>
             </tr></thead>
@@ -428,7 +428,7 @@
             </tbody>
             <tfoot class="font-bold">
               <tr>
-                <td class="p-2">Total · DY ponderado</td>
+                <td class="p-2">Total · Dividend Yield ponderado</td>
                 <td class="p-2 text-right text-gold-400" x-text="fmtPct(carteiraDYPonderado)"></td>
                 <td class="p-2 text-right" x-text="carteiraPesoTotal + '%'"></td>
                 <td></td>
@@ -503,34 +503,37 @@
     <div class="space-y-4">
       <div>
         <div class="flex justify-between text-xs mb-1">
-          <span class="opacity-70">Payout máximo</span>
-          <span class="font-semibold text-gold-400" x-text="(filtros.payoutMax*100).toFixed(0) + '%'"></span>
+          <span class="opacity-70" title="Proporção do lucro distribuída como dividendo">Payout máximo</span>
+          <span class="font-semibold text-gold-400" x-text="filtros.payoutMax + '%'"></span>
         </div>
-        <input type="range" min="0" max="150" step="5" x-model.number="filtrosRaw.payoutMax" />
+        <input type="range" min="0" max="150" step="5" x-model.number="filtros.payoutMax" />
+        <p class="text-[10px] opacity-60 mt-1 leading-tight">
+          Seguradoras, Utilities e Telecom têm tolerância maior (payout alto é estrutural nesses setores).
+        </p>
       </div>
 
       <div>
         <div class="flex justify-between text-xs mb-1">
-          <span class="opacity-70">P/L máximo</span>
-          <span class="font-semibold text-gold-400" x-text="filtros.plMax === 200 ? 'sem limite' : filtros.plMax.toFixed(0)"></span>
+          <span class="opacity-70">Preço/Lucro (P/L) máximo</span>
+          <span class="font-semibold text-gold-400" x-text="filtros.plMax >= 200 ? 'sem limite' : filtros.plMax.toFixed(0)"></span>
         </div>
         <input type="range" min="5" max="200" step="5" x-model.number="filtros.plMax" />
       </div>
 
       <div>
         <div class="flex justify-between text-xs mb-1">
-          <span class="opacity-70">DY mínimo</span>
-          <span class="font-semibold text-gold-400" x-text="(filtros.dyMin*100).toFixed(1) + '%'"></span>
+          <span class="opacity-70">Dividend Yield (DY) mínimo</span>
+          <span class="font-semibold text-gold-400" x-text="filtros.dyMin.toFixed(1) + '%'"></span>
         </div>
-        <input type="range" min="0" max="15" step="0.5" x-model.number="filtrosRaw.dyMin" />
+        <input type="range" min="0" max="15" step="0.5" x-model.number="filtros.dyMin" />
       </div>
 
       <div>
         <div class="flex justify-between text-xs mb-1">
-          <span class="opacity-70">ROE mínimo</span>
-          <span class="font-semibold text-gold-400" x-text="(filtros.roeMin*100).toFixed(0) + '%'"></span>
+          <span class="opacity-70">Return on Equity (ROE) mínimo</span>
+          <span class="font-semibold text-gold-400" x-text="filtros.roeMin.toFixed(0) + '%'"></span>
         </div>
-        <input type="range" min="0" max="40" step="1" x-model.number="filtrosRaw.roeMin" />
+        <input type="range" min="0" max="40" step="1" x-model.number="filtros.roeMin" />
       </div>
 
       <label class="flex items-center gap-2 text-sm cursor-pointer mt-3">
@@ -539,7 +542,7 @@
       </label>
       <label class="flex items-center gap-2 text-sm cursor-pointer">
         <input type="checkbox" x-model="filtros.alertarDYAlto" class="w-4 h-4 accent-gold-500" />
-        <span>Alertar DY > 15% (armadilha)</span>
+        <span>Alertar Dividend Yield (DY) > 15% (armadilha)</span>
       </label>
     </div>
 
@@ -618,18 +621,18 @@
         <h3 class="font-semibold mb-2">Fundamentos</h3>
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm mb-5">
           <template x-for="m in [
-            ['Preço', fmtR(detalhe.preco)],
-            ['Min. 52s', fmtR(detalhe.preco_minimo_52s)],
-            ['P/L', fmt(detalhe.p_l, 2)],
-            ['P/VP', fmt(detalhe.p_vp, 2)],
-            ['DY', fmtPct(detalhe.dy)],
-            ['ROE', fmtPct(detalhe.roe)],
-            ['Payout', fmtPct(detalhe.payout)],
-            ['Retorno esp.', fmtPct(detalhe.retorno)],
-            ['Valor Mercado', fmt(detalhe.valor_mercado_bi, 2) + ' bi'],
-            ['Lucro 12m', fmt(detalhe.lucro_bi, 2) + ' bi'],
-            ['Dividendos 12m', fmt(detalhe.dividendos_bi, 2) + ' bi'],
-            ['PL contábil', fmt(detalhe.patrimonio_liquido_bi, 2) + ' bi'],
+            ['Preço atual', fmtR(detalhe.preco)],
+            ['Mínima 52 semanas', fmtR(detalhe.preco_minimo_52s)],
+            ['Preço/Lucro (P/L)', fmt(detalhe.p_l, 2)],
+            ['Preço/Valor Patrimonial (P/VP)', fmt(detalhe.p_vp, 2)],
+            ['Dividend Yield (DY)', fmtPct(detalhe.dy)],
+            ['Return on Equity (ROE)', fmtPct(detalhe.roe)],
+            ['Payout (% do lucro distribuído)', fmtPct(detalhe.payout)],
+            ['Retorno esperado (DY + Growth)', fmtPct(detalhe.retorno)],
+            ['Valor de Mercado', fmt(detalhe.valor_mercado_bi, 2) + ' bi'],
+            ['Lucro Líquido (12m)', fmt(detalhe.lucro_bi, 2) + ' bi'],
+            ['Dividendos Pagos (12m)', fmt(detalhe.dividendos_bi, 2) + ' bi'],
+            ['Patrimônio Líquido (PL)', fmt(detalhe.patrimonio_liquido_bi, 2) + ' bi'],
           ]" :key="m[0]">
             <div class="p-2 rounded-lg" :class="tema === 'light' ? 'bg-paper-100' : 'bg-navy-900/50'">
               <div class="text-xs opacity-60" x-text="m[0]"></div>
@@ -695,13 +698,12 @@ function app() {
     comparando: [],
     carteira: [],
 
-    // Filtros (valores "brutos" dos sliders em unidades user-friendly)
-    filtrosRaw: { payoutMax: 85, dyMin: 0, roeMin: 0 },
+    // Filtros — valores diretos das UIs (% em percentual, P/L em número bruto)
     filtros: {
-      get payoutMax() { return app().filtrosRaw ? app().filtrosRaw.payoutMax / 100 : 0.85; },
-      plMax: 200,
-      dyMin: 0,
-      roeMin: 0,
+      payoutMax: 85,      // em %
+      plMax: 200,         // 200 = "sem limite"
+      dyMin: 0,           // em %
+      roeMin: 0,          // em %
       excluirPrejuizo: true,
       alertarDYAlto: true,
     },
@@ -709,25 +711,25 @@ function app() {
     metodoAtivo: 'retorno_pl',
     metodos: {
       retorno_pl: {
-        nome: 'Retorno / P/L',
-        descricao: 'Padrão da casa: (DY + Growth) dividido por P/L. Premia empresas com bom retorno esperado e múltiplo baixo.',
+        nome: 'Retorno / Preço-Lucro',
+        descricao: 'Padrão da casa: (Dividend Yield + Growth) dividido por Preço/Lucro (P/L). Premia empresas com bom retorno esperado e múltiplo baixo.',
         calc: s => (s.retorno != null && s.p_l && s.p_l > 0) ? s.retorno / s.p_l : null,
         explicar: s => {
           if (s.retorno == null || !s.p_l) return 'Dados incompletos para este método.';
-          return `Retorno esperado de <strong>${(s.retorno*100).toFixed(2)}%</strong> (DY ${(s.dy*100||0).toFixed(2)}% + Growth ${(s.growth*100||0).toFixed(2)}%) sobre P/L de <strong>${s.p_l.toFixed(2)}</strong>.`;
+          return `Retorno esperado de <strong>${(s.retorno*100).toFixed(2)}%</strong> (Dividend Yield ${(s.dy*100||0).toFixed(2)}% + Growth ${(s.growth*100||0).toFixed(2)}%) sobre Preço/Lucro de <strong>${s.p_l.toFixed(2)}</strong>.`;
         },
       },
       bazin: {
-        nome: 'Bazin (preço-teto 6% DY)',
-        descricao: 'Preço justo = dividendo médio / 0,06. Score = (preço justo − preço) / preço. Favorece ações abaixo do preço-teto.',
+        nome: 'Bazin (preço-teto 6% Dividend Yield)',
+        descricao: 'Preço justo = dividendo médio / 0,06. Score = (preço justo − preço) / preço. Favorece ações abaixo do preço-teto (Dividend Yield (DY) ≥ 6%).',
         calc: s => {
           if (!s.dy || !s.preco) return null;
-          const divAnual = s.dy * s.preco; // aproximação: DY LTM × preço
+          const divAnual = s.dy * s.preco; // aproximação: Dividend Yield (DY) LTM × preço
           const precoJusto = divAnual / 0.06;
           return (precoJusto - s.preco) / s.preco;
         },
         explicar: s => {
-          if (!s.dy || !s.preco) return 'Sem DY para aplicar Bazin.';
+          if (!s.dy || !s.preco) return 'Sem Dividend Yield (DY) para aplicar Bazin.';
           const divAnual = s.dy * s.preco;
           const pj = divAnual / 0.06;
           const margem = (pj - s.preco) / s.preco * 100;
@@ -736,19 +738,19 @@ function app() {
       },
       magic_formula: {
         nome: 'Magic Formula (Greenblatt)',
-        descricao: 'Cruza barato (P/L baixo, proxy de EV/EBIT) com qualidade (ROE alto, proxy de ROIC). Soma dos ranks — menor é melhor; aqui invertemos para "maior = melhor".',
+        descricao: 'Cruza barato (Preço/Lucro baixo, proxy de EV/EBIT) com qualidade (Return on Equity alto, proxy de Return on Invested Capital). Soma dos ranks — maior = melhor.',
         calc: s => {
           if (!s.p_l || s.p_l <= 0 || !s.roe || s.roe <= 0) return null;
-          return s.roe / s.p_l; // quanto maior ROE por unidade de P/L, melhor
+          return s.roe / s.p_l;
         },
         explicar: s => {
-          if (!s.p_l || !s.roe) return 'Sem ROE ou P/L válidos.';
-          return `ROE de <strong>${(s.roe*100).toFixed(2)}%</strong> sobre P/L de <strong>${s.p_l.toFixed(2)}</strong>. Greenblatt original usa EV/EBIT e ROIC — aqui usamos P/L e ROE como proxies por limitação da fonte.`;
+          if (!s.p_l || !s.roe) return 'Sem Return on Equity (ROE) ou Preço/Lucro (P/L) válidos.';
+          return `Return on Equity de <strong>${(s.roe*100).toFixed(2)}%</strong> sobre Preço/Lucro de <strong>${s.p_l.toFixed(2)}</strong>. Greenblatt original usa EV/EBIT e Return on Invested Capital (ROIC) — aqui usamos P/L e ROE como proxies.`;
         },
       },
       graham: {
         nome: 'Graham (valor intrínseco)',
-        descricao: 'Preço justo defensivo = √(22,5 × LPA × VPA). LPA = Lucro/VM × Preço; VPA = PL/VM × Preço. Favorece empresas sólidas e baratas.',
+        descricao: 'Preço justo defensivo = √(22,5 × Lucro por Ação × Valor Patrimonial por Ação). Favorece empresas sólidas e baratas.',
         calc: s => {
           if (!s.lucro_bi || !s.patrimonio_liquido_bi || !s.valor_mercado_bi || !s.preco) return null;
           const qtdAcoes = s.valor_mercado_bi / s.preco; // em bi unidades → aproximação
@@ -759,29 +761,29 @@ function app() {
           return (pj - s.preco) / s.preco;
         },
         explicar: s => {
-          if (!s.lucro_bi || !s.patrimonio_liquido_bi) return 'Sem dados de lucro/PL.';
+          if (!s.lucro_bi || !s.patrimonio_liquido_bi) return 'Sem dados de Lucro ou Patrimônio Líquido.';
           const q = s.valor_mercado_bi / s.preco;
           const lpa = s.lucro_bi / q, vpa = s.patrimonio_liquido_bi / q;
-          if (lpa <= 0 || vpa <= 0) return 'Graham não se aplica (LPA ou VPA não positivos).';
+          if (lpa <= 0 || vpa <= 0) return 'Graham não se aplica (Lucro por Ação ou Valor Patrimonial por Ação não positivos).';
           const pj = Math.sqrt(22.5 * lpa * vpa);
           const m = (pj - s.preco) / s.preco * 100;
-          return `LPA ≈ <strong>R$ ${lpa.toFixed(2)}</strong>, VPA ≈ <strong>R$ ${vpa.toFixed(2)}</strong>. Preço justo Graham = <strong>R$ ${pj.toFixed(2)}</strong>. Margem: <strong>${m.toFixed(1)}%</strong>.`;
+          return `Lucro por Ação (LPA) ≈ <strong>R$ ${lpa.toFixed(2)}</strong>, Valor Patrimonial por Ação (VPA) ≈ <strong>R$ ${vpa.toFixed(2)}</strong>. Preço justo Graham = <strong>R$ ${pj.toFixed(2)}</strong>. Margem: <strong>${m.toFixed(1)}%</strong>.`;
         },
       },
     },
 
     glossario: {
-      'P/L (Preço/Lucro)': 'Quantos anos de lucro atual o preço da ação representa. Menor = mais barato, <em>mas só compare dentro do mesmo setor</em>. Bancos têm P/L baixo estruturalmente; tech tem alto.',
+      'Preço/Lucro (P/L)': 'Quantos anos de lucro atual o preço da ação representa. Menor = mais barato, <em>mas só compare dentro do mesmo setor</em>. Bancos têm Preço/Lucro baixo estruturalmente; tecnologia tem alto.',
       'P/VP (Preço/Valor Patrimonial)': 'Quanto você paga por cada R$ 1 de patrimônio contábil. Útil para bancos e seguradoras. P/VP < 1 pode indicar barganha ou empresa em problemas.',
-      'DY (Dividend Yield)': 'Dividendos pagos nos últimos 12 meses dividido pelo preço atual. DY muito alto (> 15%) pode ser <strong>armadilha de valor</strong> — o preço pode ter caído porque o mercado espera corte de dividendos.',
+      'Dividend Yield (DY)': 'Dividendos pagos nos últimos 12 meses dividido pelo preço atual. Dividend Yield muito alto (> 15%) pode ser <strong>armadilha de valor</strong> — o preço pode ter caído porque o mercado espera corte de dividendos.',
       'ROE (Return on Equity)': 'Lucro líquido dividido pelo patrimônio. Mede quanto a empresa rende para o acionista. Acima de 15% é considerado bom; acima de 20% excelente no Brasil.',
       'ROIC': 'Retorno sobre o capital investido. Melhor que ROE porque desconta o efeito da alavancagem. Mostra quanto o negócio rende antes da estrutura de capital.',
       'Payout': 'Percentual do lucro distribuído como dividendo. Acima de 85% acende alerta: ou é uma cash-cow madura (telecom, utility), ou está distribuindo mais do que ganha — insustentável.',
       'Dívida Líquida / EBITDA': 'Quantos anos de geração de caixa operacional a empresa levaria para quitar sua dívida. Abaixo de 3× é considerado saudável. Não se aplica a bancos — use Basileia.',
-      'Lucro Recorrente': 'Lucro <em>ex-itens não recorrentes</em> (venda de ativos, créditos tributários, impairment). Mais estável que o lucro reportado e base correta para P/L comparável ao longo do tempo.',
+      'Lucro Recorrente': 'Lucro <em>ex-itens não recorrentes</em> (venda de ativos, créditos tributários, impairment). Mais estável que o lucro reportado e base correta para Preço/Lucro (P/L) comparável ao longo do tempo.',
       'Magic Formula': 'Criada por Joel Greenblatt (livro "The Little Book That Beats the Market"). Ranqueia ações por barato (EV/EBIT) e qualidade (ROIC); compra as top-30 e roda anualmente.',
       'Fórmula de Bazin': 'Décio Bazin, autor brasileiro. Preço justo = dividendo médio 5 anos / 0,06. Lógica: se quero 6% de yield real, qual o preço-teto para pagar?',
-      'Fórmula de Graham': 'Benjamin Graham, mentor de Warren Buffett. Preço justo defensivo = √(22,5 × LPA × VPA). 22,5 vem de (P/L máx 15 × P/VP máx 1,5). Ações que passam são "baratas e sólidas".',
+      'Fórmula de Graham': 'Benjamin Graham, mentor de Warren Buffett. Preço justo defensivo = √(22,5 × Lucro por Ação (LPA) × Valor Patrimonial por Ação (VPA)). 22,5 vem de (Preço/Lucro máx 15 × Preço/Valor Patrimonial máx 1,5). Ações que passam são "baratas e sólidas".',
     },
 
     // === INICIALIZAÇÃO ===
@@ -796,11 +798,6 @@ function app() {
         alert('Não consegui carregar os dados. Se você abriu o arquivo direto (file://), sirva via "python -m http.server" ou publique no GitHub Pages.');
       }
 
-      // sincroniza filtros raw ↔ reais
-      this.$watch('filtrosRaw.payoutMax', v => this.filtros.payoutMax = v / 100);
-      this.$watch('filtrosRaw.dyMin',     v => this.filtros.dyMin = v / 100);
-      this.$watch('filtrosRaw.roeMin',    v => this.filtros.roeMin = v / 100);
-      this.filtros.payoutMax = this.filtrosRaw.payoutMax / 100;
     },
 
     toggleTema() {
@@ -808,29 +805,36 @@ function app() {
       localStorage.setItem('vrai.tema', this.tema);
     },
     resetarFiltros() {
-      this.filtrosRaw = { payoutMax: 85, dyMin: 0, roeMin: 0 };
-      this.filtros.plMax = 200;
-      this.filtros.excluirPrejuizo = true;
-      this.filtros.alertarDYAlto = true;
+      this.filtros = { payoutMax: 85, plMax: 200, dyMin: 0, roeMin: 0, excluirPrejuizo: true, alertarDYAlto: true };
     },
 
     // === PROCESSAMENTO ===
+    // Exceções estruturais de payout (setores onde payout alto é característico do modelo de negócio, não sinal de risco):
+    // • Seguradoras: baixa necessidade de reinvestimento + regulação de capital menos exigente → payout normal 80-100%+
+    // • Utilities (energia, saneamento, transmissão): receita regulada, CAPEX financiado por dívida → payout 80-95%
+    // • Telecom: maturidade, fluxo de caixa estável → payout pode exceder 100% em anos de baixo CAPEX
+    _payoutMaxPorSetor(setor) {
+      const base = this.filtros.payoutMax; // em %
+      if (/Seguradora/i.test(setor)) return Math.max(110, base + 25); // até 110% é estrutural em seguradoras
+      if (/Utilit|Utilid/i.test(setor)) return Math.max(95, base + 10);
+      if (/Telecom/i.test(setor)) return Math.max(100, base + 15);
+      return base;
+    },
+
     _processar(s) {
       const motivos = [];
-      const isUtil = /Utilit|Utilid/i.test(s.setor || '');
-      const isBanco = /Banco/i.test(s.setor || '');
-      const payoutLim = isUtil ? Math.min(0.90, this.filtros.payoutMax + 0.05) : this.filtros.payoutMax;
+      const payoutMaxPct = this._payoutMaxPorSetor(s.setor || '');
 
       if (this.filtros.excluirPrejuizo) {
-        if (s.p_l == null || s.p_l <= 0) motivos.push('P/L inválido ou prejuízo');
-        if (s.roe == null || s.roe <= 0) motivos.push('ROE ≤ 0');
+        if (s.p_l == null || s.p_l <= 0) motivos.push('Preço/Lucro (P/L) inválido ou prejuízo nos últimos 12 meses');
+        if (s.roe == null || s.roe <= 0) motivos.push('Return on Equity (ROE) ≤ 0');
       }
-      if (s.p_l != null && s.p_l > this.filtros.plMax && this.filtros.plMax < 200) motivos.push(`P/L ${s.p_l.toFixed(1)} > ${this.filtros.plMax}`);
-      if (s.dy != null && s.dy < this.filtros.dyMin) motivos.push(`DY ${(s.dy*100).toFixed(1)}% < ${(this.filtros.dyMin*100).toFixed(1)}%`);
-      if (s.roe != null && s.roe < this.filtros.roeMin) motivos.push(`ROE ${(s.roe*100).toFixed(1)}% < ${(this.filtros.roeMin*100).toFixed(0)}%`);
-      if (s.payout != null && s.payout > payoutLim) motivos.push(`Payout ${(s.payout*100).toFixed(1)}% > ${(payoutLim*100).toFixed(0)}%`);
+      if (s.p_l != null && s.p_l > this.filtros.plMax && this.filtros.plMax < 200) motivos.push(`Preço/Lucro (P/L) ${s.p_l.toFixed(1)} > ${this.filtros.plMax}`);
+      if (s.dy != null && s.dy * 100 < this.filtros.dyMin) motivos.push(`Dividend Yield (DY) ${(s.dy*100).toFixed(1)}% < ${this.filtros.dyMin.toFixed(1)}%`);
+      if (s.roe != null && s.roe * 100 < this.filtros.roeMin) motivos.push(`Return on Equity (ROE) ${(s.roe*100).toFixed(1)}% < ${this.filtros.roeMin.toFixed(0)}%`);
+      if (s.payout != null && s.payout * 100 > payoutMaxPct) motivos.push(`Payout ${(s.payout*100).toFixed(1)}% > ${payoutMaxPct.toFixed(0)}% (limite para este setor)`);
       if (s.payout != null && s.payout < 0) motivos.push('Payout negativo');
-      if (this.filtros.alertarDYAlto && s.dy != null && s.dy > 0.15) motivos.push(`DY ${(s.dy*100).toFixed(1)}% — possível armadilha`);
+      if (this.filtros.alertarDYAlto && s.dy != null && s.dy > 0.15) motivos.push(`Dividend Yield (DY) ${(s.dy*100).toFixed(1)}% — possível armadilha de valor`);
 
       const score = this.metodos[this.metodoAtivo].calc(s);
       return { ...s, _motivos: motivos, _aprovado: motivos.length === 0, _score: score };
@@ -887,11 +891,11 @@ function app() {
       const sinais = [];
       if (s.payout != null && s.payout > 1) sinais.push({ icone: '🚨', t: 'Payout acima de 100%. ', d: 'A empresa está distribuindo mais do que lucra — insustentável sem alavancagem ou venda de ativos.' });
       else if (s.payout != null && s.payout > 0.85) sinais.push({ icone: '⚠', t: 'Payout elevado. ', d: 'Pouca margem para reinvestir. Ok para maduras/reguladas (utility, telecom); atenção nas demais.' });
-      if (s.dy != null && s.dy > 0.15) sinais.push({ icone: '🎣', t: 'DY muito alto. ', d: 'Pode ser armadilha: preço caiu, mas o dividendo pode não se repetir.' });
-      if (s.p_l != null && s.p_l < 0) sinais.push({ icone: '🚫', t: 'Prejuízo nos últimos 12 meses. ', d: 'P/L negativo — não aplique fórmulas de múltiplo diretamente.' });
+      if (s.dy != null && s.dy > 0.15) sinais.push({ icone: '🎣', t: 'Dividend Yield (DY) muito alto. ', d: 'Pode ser armadilha: preço caiu, mas o dividendo pode não se repetir.' });
+      if (s.p_l != null && s.p_l < 0) sinais.push({ icone: '🚫', t: 'Prejuízo nos últimos 12 meses. ', d: 'Preço/Lucro (P/L) negativo — não aplique fórmulas de múltiplo diretamente.' });
       if (s.preco && s.preco_minimo_52s && (s.preco - s.preco_minimo_52s) / s.preco_minimo_52s < 0.05) sinais.push({ icone: '📉', t: 'Próximo da mínima de 52 semanas. ', d: 'Pode ser oportunidade ou sinal de que o mercado está precificando problema.' });
-      if (/Materiais Básicos|Petróleo|Agro/i.test(s.setor)) sinais.push({ icone: '🔄', t: 'Setor cíclico. ', d: 'Lucro e preço oscilam com a commodity. P/L baixo no pico do ciclo costuma ser armadilha.' });
-      if (/Banco/i.test(s.setor) && s.p_l != null && s.p_l < 2) sinais.push({ icone: 'ℹ', t: 'P/L muito baixo típico de bancos. ', d: 'Normal estruturalmente. Para bancos, priorize ROE e P/VP.' });
+      if (/Materiais Básicos|Petróleo|Agro/i.test(s.setor)) sinais.push({ icone: '🔄', t: 'Setor cíclico. ', d: 'Lucro e preço oscilam com a commodity. Preço/Lucro (P/L) baixo no pico do ciclo costuma ser armadilha.' });
+      if (/Banco/i.test(s.setor) && s.p_l != null && s.p_l < 2) sinais.push({ icone: 'ℹ', t: 'Preço/Lucro (P/L) muito baixo típico de bancos. ', d: 'Normal estruturalmente. Para bancos, priorize Return on Equity (ROE) e Preço/Valor Patrimonial (P/VP).' });
       return sinais;
     },
 
