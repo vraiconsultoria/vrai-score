@@ -27,7 +27,12 @@ async function loadYahoo() {
   if (yahooFinance) return yahooFinance;
   const mod = await import('yahoo-finance2');
   yahooFinance = mod.default;
-  yahooFinance.suppressNotices(['yahooSurvey', 'ripHistorical']);
+  // Tenta silenciar avisos da biblioteca; se a API mudou, ignora.
+  try {
+    if (typeof yahooFinance.suppressNotices === 'function') {
+      yahooFinance.suppressNotices(['yahooSurvey', 'ripHistorical']);
+    }
+  } catch {}
   return yahooFinance;
 }
 
