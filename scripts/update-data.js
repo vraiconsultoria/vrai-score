@@ -6,8 +6,7 @@
 //   • Preço, 52s-min, valor de mercado, P/L, P/VP, DY, ROE, EV/EBITDA:
 //     Yahoo Finance (via biblioteca yahoo-finance2). Tickers B3 usam sufixo ".SA".
 //   • ROIC, Dívida Líquida/EBITDA, Margem Líquida: Fundamentus (scraping).
-//   • Payout, dividendos 5 anos, P/L Recorrente: permanecem do snapshot manual
-//     até termos fonte confiável automatizada (próxima entrega).
+//   • Dividendos 5 anos: permanecem do snapshot manual (próxima entrega).
 //
 // Por que Yahoo e não brapi?
 //   brapi mudou para plano pago nos fundamentais. Yahoo é gratuito, estável e
@@ -59,12 +58,23 @@ async function fetchYahoo(ticker) {
   const symbol = `${ticker}.SA`;
   try {
     const r = await yf.quoteSummary(symbol, {
-      modules: ['price', 'summaryDetail', 'defaultKeyStatistics', 'financialData'],
+      modules: [
+        'price',
+        'summaryDetail',
+        'defaultKeyStatistics',
+        'financialData',
+        'incomeStatementHistory',
+        'balanceSheetHistory',
+      ],
     });
     const price = r.price || {};
     const sd = r.summaryDetail || {};
     const ks = r.defaultKeyStatistics || {};
     const fd = r.financialData || {};
+    const isHist = (r.incomeStatementHistory && r.incomeStatementHistory.incomeStatementHistory) || [];
+    const bsHist = (r.balanceSheetHistory && r.balanceSheetHistory.balanceSheetStatements) || [];
+    const lucroAbs = isHist[0] && isHist[0].netIncome ? isHist[0].netIncome : null;
+    const plAbs = bsHist[0] && bsHist[0].totalStockholderEquity ? bsHist[0].totalStockholderEquity : null;
     return {
       preco: price.regularMarketPrice ?? sd.regularMarketPreviousClose ?? null,
       preco_minimo_52s: sd.fiftyTwoWeekLow ?? null,
@@ -74,6 +84,9 @@ async function fetchYahoo(ticker) {
       dy: sd.dividendYield ?? sd.trailingAnnualDividendYield ?? null, // já fracional
       roe: fd.returnOnEquity ?? null,                                  // já fracional
       ev_ebitda: ks.enterpriseToEbitda ?? null,
+      payout: sd.payoutRatio ?? null,                                  // já fracional
+      lucro_bi: lucroAbs != null ? Number((lucroAbs / 1e9).toFixed(3)) : null,
+      patrimonio_liquido_bi: plAbs != null ? Number((plAbs / 1e9).toFixed(3)) : null,
     };
   } catch (e) {
     return { _erro: e.message };
@@ -170,6 +183,9 @@ async function main() {
     set('dy', y.dy);
     set('roe', y.roe);
     set('ev_ebitda', y.ev_ebitda);
+    set('payout', y.payout);
+    set('lucro_bi', y.lucro_bi);
+    set('patrimonio_liquido_bi', y.patrimonio_liquido_bi);
     set('roic', f.roic);
     set('div_liq_ebitda', f.div_liq_ebitda);
     set('marg_liquida', f.marg_liquida);
@@ -183,9 +199,9 @@ async function main() {
       gerado_em: new Date().toISOString(),
       fechamento_referencia: todayBRT(),
       total_ativos: updated.length,
-      fonte: 'Yahoo Finance (preço, P/L, P/VP, DY, ROE, EV/EBITDA) + Fundamentus (ROIC, DL/EBITDA, margem) — auto',
-      versao: '2.0.0',
-      aviso: 'Preços do último fechamento disponível no Yahoo Finance. Payout, dividendos 5 anos e P/L Recorrente ainda são snapshot manual.',
+      fonte: 'Yahoo Finance (preço, P/L, P/VP, DY, ROE, EV/EBITDA, Payout, Lucro, PL) + Fundamentus (ROIC, DL/EBITDA, margem) — auto',
+      versao: '2.1.0',
+      aviso: 'Preços do último fechamento disponível no Yahoo Finance. Histórico de dividendos 5 anos ainda é snapshot manual.',
     },
     stocks: updated,
   };
