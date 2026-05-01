@@ -1,6 +1,6 @@
 {
   "meta": {
-    "gerado_em": "2026-04-18T22:12:16.086Z",
+    "gerado_em": "2026-05-01T19:11:30.389Z",
     "total_ativos": 62,
     "setores": {
       "Bancos": 7,
@@ -15,9 +15,10 @@
       "Tecnologia": 3,
       "Consumo Cíclico": 4
     },
-    "fonte": "Planilha \"Análises\" VRAI — snapshot inicial",
-    "versao": "1.0.0",
-    "aviso": "Dados de snapshot. v2 trará atualização automática via brapi.dev + Fundamentus."
+    "fonte": "Yahoo Finance (preço, P/L, P/VP, DY, ROE, EV/EBITDA) + Fundamentus (ROIC, DL/EBITDA, margem) — auto",
+    "versao": "2.0.0",
+    "aviso": "Preços do último fechamento disponível no Yahoo Finance. Payout, dividendos 5 anos e P/L Recorrente ainda são snapshot manual.",
+    "fechamento_referencia": "2026-05-01"
   },
   "stocks": [
     {
@@ -56,7 +57,8 @@
       "p_l": 0.9,
       "dy": 0.0917,
       "growth": 0.031,
-      "retorno": 0.12269999999999999
+      "retorno": 0.12269999999999999,
+      "roic": 0.003
     },
     {
       "ativo": "BBAS3",
@@ -170,7 +172,8 @@
       "p_l": 16.06,
       "dy": 0.042300000000000004,
       "growth": 0.1304,
-      "retorno": 0.1726
+      "retorno": 0.1726,
+      "roic": 0.774
     },
     {
       "ativo": "CXSE3",
@@ -189,7 +192,8 @@
       "p_l": 4.41,
       "dy": 0.07429999999999999,
       "growth": 0.028399999999999998,
-      "retorno": 0.1027
+      "retorno": 0.1027,
+      "roic": -0.011
     },
     {
       "ativo": "BBSE3",
@@ -227,7 +231,8 @@
       "p_l": 0.42,
       "dy": 0.06559999999999999,
       "growth": 0.163,
-      "retorno": 0.22870000000000001
+      "retorno": 0.22870000000000001,
+      "roic": 0.174
     },
     {
       "ativo": "UGPA3",
@@ -246,7 +251,8 @@
       "p_l": 12.13,
       "dy": 0.04769999999999999,
       "growth": 0.064,
-      "retorno": 0.1117
+      "retorno": 0.1117,
+      "roic": 0.122
     },
     {
       "ativo": "VBBR3",
@@ -265,7 +271,8 @@
       "p_l": 16.58,
       "dy": 0.0425,
       "growth": 0.0226,
-      "retorno": 0.0652
+      "retorno": 0.0652,
+      "roic": 0.087
     },
     {
       "ativo": "AXIA3",
@@ -284,7 +291,8 @@
       "p_l": 9.68,
       "dy": 0.0489,
       "growth": -0.0139,
-      "retorno": 0.035
+      "retorno": 0.035,
+      "roic": 0.023
     },
     {
       "ativo": "SBSP3",
@@ -303,7 +311,8 @@
       "p_l": 18.04,
       "dy": 0.024,
       "growth": 0.13949999999999999,
-      "retorno": 0.1634
+      "retorno": 0.1634,
+      "roic": 0.137
     },
     {
       "ativo": "CPFE3",
@@ -322,7 +331,8 @@
       "p_l": 10.03,
       "dy": 0.0602,
       "growth": 0.1007,
-      "retorno": 0.1609
+      "retorno": 0.1609,
+      "roic": 0.154
     },
     {
       "ativo": "EQTL3",
@@ -341,7 +351,8 @@
       "p_l": 13.44,
       "dy": 0.0524,
       "growth": 0.023,
-      "retorno": 0.0753
+      "retorno": 0.0753,
+      "roic": 0.105
     },
     {
       "ativo": "NEOE3",
@@ -360,7 +371,8 @@
       "p_l": 6.69,
       "dy": 0.0493,
       "growth": 0.0834,
-      "retorno": 0.1328
+      "retorno": 0.1328,
+      "roic": 0.106
     },
     {
       "ativo": "CMIG4",
@@ -379,7 +391,8 @@
       "p_l": 2.78,
       "dy": 0.1093,
       "growth": 0.022000000000000002,
-      "retorno": 0.1313
+      "retorno": 0.1313,
+      "roic": 0.102
     },
     {
       "ativo": "EGIE3",
@@ -398,7 +411,8 @@
       "p_l": 14.52,
       "dy": 0.0815,
       "growth": -0.0281,
-      "retorno": 0.0535
+      "retorno": 0.0535,
+      "roic": 0.108
     },
     {
       "ativo": "CEGR3",
@@ -417,7 +431,8 @@
       "p_l": 42.75,
       "dy": 0.01,
       "growth": 0.3132,
-      "retorno": 0.3232
+      "retorno": 0.3232,
+      "roic": 0.272
     },
     {
       "ativo": "ENGI11",
@@ -436,7 +451,8 @@
       "p_l": 25.91,
       "dy": 0.0632,
       "growth": 0.0278,
-      "retorno": 0.0909
+      "retorno": 0.0909,
+      "roic": 0.102
     },
     {
       "ativo": "ISAE4",
@@ -455,7 +471,8 @@
       "p_l": 12.68,
       "dy": 0.0388,
       "growth": 0.0791,
-      "retorno": 0.11789999999999999
+      "retorno": 0.11789999999999999,
+      "roic": 0.08
     },
     {
       "ativo": "CGAS3",
@@ -474,7 +491,8 @@
       "p_l": 84.14,
       "dy": 0.0706,
       "growth": 0.2444,
-      "retorno": 0.315
+      "retorno": 0.315,
+      "roic": 0.234
     },
     {
       "ativo": "TAEE11",
@@ -493,7 +511,8 @@
       "p_l": 28.49,
       "dy": 0.0776,
       "growth": 0.061399999999999996,
-      "retorno": 0.139
+      "retorno": 0.139,
+      "roic": 0.106
     },
     {
       "ativo": "SAPR11",
@@ -512,7 +531,8 @@
       "p_l": 19.64,
       "dy": 0.0355,
       "growth": 0.1309,
-      "retorno": 0.1664
+      "retorno": 0.1664,
+      "roic": 0.097
     },
     {
       "ativo": "SAPR4",
@@ -531,7 +551,8 @@
       "p_l": 3.78,
       "dy": 0.0355,
       "growth": 0.1309,
-      "retorno": 0.1664
+      "retorno": 0.1664,
+      "roic": 0.097
     },
     {
       "ativo": "RADL3",
@@ -550,7 +571,8 @@
       "p_l": 17.85,
       "dy": 0.018000000000000002,
       "growth": 0.0779,
-      "retorno": 0.0959
+      "retorno": 0.0959,
+      "roic": 0.151
     },
     {
       "ativo": "FLRY3",
@@ -569,7 +591,8 @@
       "p_l": 27.18,
       "dy": 0.0661,
       "growth": 0.011899999999999999,
-      "retorno": 0.0781
+      "retorno": 0.0781,
+      "roic": 0.121
     },
     {
       "ativo": "PGMN3",
@@ -588,7 +611,8 @@
       "p_l": 21.93,
       "dy": 0.042199999999999994,
       "growth": 0.0239,
-      "retorno": 0.0661
+      "retorno": 0.0661,
+      "roic": 0.119
     },
     {
       "ativo": "BLAU3",
@@ -607,7 +631,8 @@
       "p_l": 38.86,
       "dy": 0.0358,
       "growth": 0.0934,
-      "retorno": 0.1292
+      "retorno": 0.1292,
+      "roic": 0.12
     },
     {
       "ativo": "PNVL3",
@@ -626,7 +651,8 @@
       "p_l": 116.95,
       "dy": 0.0143,
       "growth": 0.0737,
-      "retorno": 0.08789999999999999
+      "retorno": 0.08789999999999999,
+      "roic": 0.088
     },
     {
       "ativo": "OFSA3",
@@ -645,7 +671,8 @@
       "p_l": 140.29,
       "dy": 0.027200000000000002,
       "growth": 0.2298,
-      "retorno": 0.257
+      "retorno": 0.257,
+      "roic": 0.202
     },
     {
       "ativo": "PFRM3",
@@ -664,7 +691,8 @@
       "p_l": 66.78,
       "dy": 0.0872,
       "growth": 0.0291,
-      "retorno": 0.1162
+      "retorno": 0.1162,
+      "roic": 0.115
     },
     {
       "ativo": "ABEV3",
@@ -683,7 +711,8 @@
       "p_l": 0.95,
       "dy": 0.057800000000000004,
       "growth": 0.0248,
-      "retorno": 0.08259999999999999
+      "retorno": 0.08259999999999999,
+      "roic": 0.198
     },
     {
       "ativo": "JBSS32",
@@ -721,7 +750,8 @@
       "p_l": 17.85,
       "dy": 0.018000000000000002,
       "growth": 0.0779,
-      "retorno": 0.0959
+      "retorno": 0.0959,
+      "roic": 0.151
     },
     {
       "ativo": "VIVT3",
@@ -740,7 +770,8 @@
       "p_l": 5.25,
       "dy": 0.053099999999999994,
       "growth": -0.0111,
-      "retorno": 0.042
+      "retorno": 0.042,
+      "roic": 0.086
     },
     {
       "ativo": "TIMS3",
@@ -778,7 +809,8 @@
       "p_l": 7.44,
       "dy": 0.0194,
       "growth": 0.1469,
-      "retorno": 0.1663
+      "retorno": 0.1663,
+      "roic": 0.26
     },
     {
       "ativo": "RAPT4",
@@ -797,7 +829,8 @@
       "p_l": -22.3,
       "dy": 0.009399999999999999,
       "growth": -0.0827,
-      "retorno": -0.0733
+      "retorno": -0.0733,
+      "roic": 0.081
     },
     {
       "ativo": "POMO4",
@@ -816,7 +849,8 @@
       "p_l": 5.73,
       "dy": 0.1604,
       "growth": 0.0138,
-      "retorno": 0.1743
+      "retorno": 0.1743,
+      "roic": 0.206
     },
     {
       "ativo": "KEPL3",
@@ -835,7 +869,8 @@
       "p_l": 51.75,
       "dy": 0.1023,
       "growth": 0.0077,
-      "retorno": 0.11
+      "retorno": 0.11,
+      "roic": 0.143
     },
     {
       "ativo": "LEVE3",
@@ -854,7 +889,8 @@
       "p_l": 60.23,
       "dy": 0.0771,
       "growth": 0.2807,
-      "retorno": 0.3578
+      "retorno": 0.3578,
+      "roic": 0.359
     },
     {
       "ativo": "EMBJ3",
@@ -873,7 +909,8 @@
       "p_l": 43.32,
       "dy": 0.0039000000000000003,
       "growth": 0.0916,
-      "retorno": 0.0955
+      "retorno": 0.0955,
+      "roic": 0.085
     },
     {
       "ativo": "RAIL3",
@@ -892,7 +929,8 @@
       "p_l": 19.54,
       "dy": 0.049,
       "growth": -0.047599999999999996,
-      "retorno": 0.0013
+      "retorno": 0.0013,
+      "roic": 0.123
     },
     {
       "ativo": "VALE3",
@@ -911,7 +949,8 @@
       "p_l": 5.65,
       "dy": 0.0706,
       "growth": -0.06,
-      "retorno": 0.0106
+      "retorno": 0.0106,
+      "roic": 0.179
     },
     {
       "ativo": "CSNA3",
@@ -930,7 +969,8 @@
       "p_l": -3.28,
       "dy": 0,
       "growth": -0.1555,
-      "retorno": -0.1555
+      "retorno": -0.1555,
+      "roic": 0.081
     },
     {
       "ativo": "KLBN11",
@@ -949,7 +989,8 @@
       "p_l": 11.6,
       "dy": 0.0509,
       "growth": 0.031400000000000004,
-      "retorno": 0.0824
+      "retorno": 0.0824,
+      "roic": 0.088
     },
     {
       "ativo": "SUZB3",
@@ -968,7 +1009,8 @@
       "p_l": 3.82,
       "dy": 0.0218,
       "growth": 0.2738,
-      "retorno": 0.2956
+      "retorno": 0.2956,
+      "roic": 0.068
     },
     {
       "ativo": "SLCE3",
@@ -987,7 +1029,8 @@
       "p_l": 30.74,
       "dy": 0.0858,
       "growth": -0.0127,
-      "retorno": 0.073
+      "retorno": 0.073,
+      "roic": 0.117
     },
     {
       "ativo": "AGRO3",
@@ -1006,7 +1049,8 @@
       "p_l": -848.29,
       "dy": 0.0374,
       "growth": -0.0481,
-      "retorno": -0.0108
+      "retorno": -0.0108,
+      "roic": 0.007
     },
     {
       "ativo": "JALL3",
@@ -1025,7 +1069,8 @@
       "p_l": -44.25,
       "dy": 0,
       "growth": -0.0353,
-      "retorno": -0.0353
+      "retorno": -0.0353,
+      "roic": -0.035
     },
     {
       "ativo": "SMTO3",
@@ -1044,7 +1089,8 @@
       "p_l": 32.66,
       "dy": 0.0285,
       "growth": 0.050199999999999995,
-      "retorno": 0.0787
+      "retorno": 0.0787,
+      "roic": 0.056
     },
     {
       "ativo": "KEPL3",
@@ -1063,7 +1109,8 @@
       "p_l": 56.99,
       "dy": 0.085,
       "growth": -0.0111,
-      "retorno": 0.0738
+      "retorno": 0.0738,
+      "roic": 0.143
     },
     {
       "ativo": "TOTS3",
@@ -1082,7 +1129,8 @@
       "p_l": 43.63,
       "dy": 0.0143,
       "growth": 0.08789999999999999,
-      "retorno": 0.10210000000000001
+      "retorno": 0.10210000000000001,
+      "roic": 0.292
     },
     {
       "ativo": "LWSA3",
@@ -1101,7 +1149,8 @@
       "p_l": -15.25,
       "dy": 0.011899999999999999,
       "growth": -0.1247,
-      "retorno": -0.1127
+      "retorno": -0.1127,
+      "roic": 0.05
     },
     {
       "ativo": "INTB3",
@@ -1120,7 +1169,8 @@
       "p_l": 31.03,
       "dy": 0.1243,
       "growth": 0.0044,
-      "retorno": 0.1288
+      "retorno": 0.1288,
+      "roic": 0.151
     },
     {
       "ativo": "AZZA3",
@@ -1139,7 +1189,8 @@
       "p_l": 29.37,
       "dy": 0.10460000000000001,
       "growth": 0.028999999999999998,
-      "retorno": 0.1335
+      "retorno": 0.1335,
+      "roic": 0.084
     },
     {
       "ativo": "RENT3",
@@ -1158,7 +1209,8 @@
       "p_l": 23.59,
       "dy": 0.0418,
       "growth": -0.0075,
-      "retorno": 0.034300000000000004
+      "retorno": 0.034300000000000004,
+      "roic": 0.119
     },
     {
       "ativo": "MGLU3",
@@ -1177,7 +1229,8 @@
       "p_l": 22.27,
       "dy": 0.0355,
       "growth": 0.0128,
-      "retorno": 0.0483
+      "retorno": 0.0483,
+      "roic": 0.062
     },
     {
       "ativo": "VIVA3",
@@ -1196,7 +1249,8 @@
       "p_l": 37.21,
       "dy": 0.0461,
       "growth": 0.1436,
-      "retorno": 0.18969999999999998
+      "retorno": 0.18969999999999998,
+      "roic": 0.178
     }
   ]
 }
