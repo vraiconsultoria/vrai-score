@@ -1,6 +1,6 @@
 {
   "meta": {
-    "gerado_em": "2026-05-01T19:11:30.389Z",
+    "gerado_em": "2026-05-01T19:26:00.041Z",
     "total_ativos": 62,
     "setores": {
       "Bancos": 7,
@@ -15,9 +15,9 @@
       "Tecnologia": 3,
       "Consumo Cíclico": 4
     },
-    "fonte": "Yahoo Finance (preço, P/L, P/VP, DY, ROE, EV/EBITDA) + Fundamentus (ROIC, DL/EBITDA, margem) — auto",
-    "versao": "2.0.0",
-    "aviso": "Preços do último fechamento disponível no Yahoo Finance. Payout, dividendos 5 anos e P/L Recorrente ainda são snapshot manual.",
+    "fonte": "Yahoo Finance (preço, P/L, P/VP, DY, ROE, EV/EBITDA, Payout, Lucro, PL) + Fundamentus (ROIC, DL/EBITDA, margem) — auto",
+    "versao": "2.1.0",
+    "aviso": "Preços do último fechamento disponível no Yahoo Finance. Histórico de dividendos 5 anos ainda é snapshot manual.",
     "fechamento_referencia": "2026-05-01"
   },
   "stocks": [
