@@ -1,0 +1,14 @@
+{
+  "name": "vrai-score-updater",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Atualização automática de dados do Vrai Score (Yahoo Finance + Fundamentus)",
+  "main": "update-data.js",
+  "scripts": {
+    "update": "node update-data.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "yahoo-finance2": "^2.13.3"
+  }
+}
