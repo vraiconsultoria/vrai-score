@@ -20,10 +20,16 @@
 
 const fs = require('fs');
 const path = require('path');
-const yahooFinance = require('yahoo-finance2').default;
 
-// Reduz ruído nos logs da biblioteca
-yahooFinance.suppressNotices(['yahooSurvey', 'ripHistorical']);
+// yahoo-finance2 é ESM-only nas versões recentes — carregamos via import() dinâmico.
+let yahooFinance = null;
+async function loadYahoo() {
+  if (yahooFinance) return yahooFinance;
+  const mod = await import('yahoo-finance2');
+  yahooFinance = mod.default;
+  yahooFinance.suppressNotices(['yahooSurvey', 'ripHistorical']);
+  return yahooFinance;
+}
 
 // ---------- helpers ----------
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -44,9 +50,10 @@ function todayBRT() {
 
 // ---------- Yahoo Finance ----------
 async function fetchYahoo(ticker) {
+  const yf = await loadYahoo();
   const symbol = `${ticker}.SA`;
   try {
-    const r = await yahooFinance.quoteSummary(symbol, {
+    const r = await yf.quoteSummary(symbol, {
       modules: ['price', 'summaryDetail', 'defaultKeyStatistics', 'financialData'],
     });
     const price = r.price || {};
