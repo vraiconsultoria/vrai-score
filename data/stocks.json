@@ -1,6 +1,6 @@
 {
   "meta": {
-    "gerado_em": "2026-05-01T19:26:00.041Z",
+    "gerado_em": "2026-05-02T05:58:51.591Z",
     "total_ativos": 62,
     "setores": {
       "Bancos": 7,
@@ -18,7 +18,7 @@
     "fonte": "Yahoo Finance (preço, P/L, P/VP, DY, ROE, EV/EBITDA, Payout, Lucro, PL) + Fundamentus (ROIC, DL/EBITDA, margem) — auto",
     "versao": "2.1.0",
     "aviso": "Preços do último fechamento disponível no Yahoo Finance. Histórico de dividendos 5 anos ainda é snapshot manual.",
-    "fechamento_referencia": "2026-05-01"
+    "fechamento_referencia": "2026-05-02"
   },
   "stocks": [
     {
