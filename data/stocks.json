@@ -1,6 +1,6 @@
 {
   "meta": {
-    "gerado_em": "2026-05-05T22:47:20.391Z",
+    "gerado_em": "2026-05-06T22:40:47.109Z",
     "total_ativos": 62,
     "setores": {
       "Bancos": 7,
@@ -18,7 +18,7 @@
     "fonte": "Yahoo Finance (preço, P/L, P/VP, DY, ROE, EV/EBITDA, Payout, Lucro, PL) + Fundamentus (ROIC, DL/EBITDA, margem) — auto",
     "versao": "2.1.0",
     "aviso": "Preços do último fechamento disponível no Yahoo Finance. Histórico de dividendos 5 anos ainda é snapshot manual.",
-    "fechamento_referencia": "2026-05-05"
+    "fechamento_referencia": "2026-05-06"
   },
   "stocks": [
     {
@@ -572,7 +572,7 @@
       "dy": 0.018000000000000002,
       "growth": 0.0779,
       "retorno": 0.0959,
-      "roic": 0.151
+      "roic": 0.156
     },
     {
       "ativo": "FLRY3",
@@ -751,7 +751,7 @@
       "dy": 0.018000000000000002,
       "growth": 0.0779,
       "retorno": 0.0959,
-      "roic": 0.151
+      "roic": 0.156
     },
     {
       "ativo": "VIVT3",
@@ -790,7 +790,8 @@
       "p_l": 5.07,
       "dy": 0.0805,
       "growth": -0.0332,
-      "retorno": 0.0473
+      "retorno": 0.0473,
+      "roic": 0.004
     },
     {
       "ativo": "WEGE3",
@@ -990,7 +991,7 @@
       "dy": 0.0509,
       "growth": 0.031400000000000004,
       "retorno": 0.0824,
-      "roic": 0.088
+      "roic": 0.063
     },
     {
       "ativo": "SUZB3",
