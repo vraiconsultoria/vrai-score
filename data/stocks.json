@@ -1,6 +1,6 @@
 {
   "meta": {
-    "gerado_em": "2026-05-06T22:40:47.109Z",
+    "gerado_em": "2026-05-07T22:53:52.767Z",
     "total_ativos": 62,
     "setores": {
       "Bancos": 7,
@@ -18,7 +18,7 @@
     "fonte": "Yahoo Finance (preço, P/L, P/VP, DY, ROE, EV/EBITDA, Payout, Lucro, PL) + Fundamentus (ROIC, DL/EBITDA, margem) — auto",
     "versao": "2.1.0",
     "aviso": "Preços do último fechamento disponível no Yahoo Finance. Histórico de dividendos 5 anos ainda é snapshot manual.",
-    "fechamento_referencia": "2026-05-06"
+    "fechamento_referencia": "2026-05-07"
   },
   "stocks": [
     {
@@ -173,7 +173,7 @@
       "dy": 0.042300000000000004,
       "growth": 0.1304,
       "retorno": 0.1726,
-      "roic": 0.774
+      "roic": 0.775
     },
     {
       "ativo": "CXSE3",
@@ -252,7 +252,7 @@
       "dy": 0.04769999999999999,
       "growth": 0.064,
       "retorno": 0.1117,
-      "roic": 0.122
+      "roic": 0.141
     },
     {
       "ativo": "VBBR3",
@@ -272,7 +272,7 @@
       "dy": 0.0425,
       "growth": 0.0226,
       "retorno": 0.0652,
-      "roic": 0.087
+      "roic": 0.099
     },
     {
       "ativo": "AXIA3",
@@ -292,7 +292,7 @@
       "dy": 0.0489,
       "growth": -0.0139,
       "retorno": 0.035,
-      "roic": 0.023
+      "roic": 0.03
     },
     {
       "ativo": "SBSP3",
@@ -512,7 +512,7 @@
       "dy": 0.0776,
       "growth": 0.061399999999999996,
       "retorno": 0.139,
-      "roic": 0.106
+      "roic": 0.107
     },
     {
       "ativo": "SAPR11",
@@ -652,7 +652,7 @@
       "dy": 0.0143,
       "growth": 0.0737,
       "retorno": 0.08789999999999999,
-      "roic": 0.088
+      "roic": 0.098
     },
     {
       "ativo": "OFSA3",
@@ -692,7 +692,7 @@
       "dy": 0.0872,
       "growth": 0.0291,
       "retorno": 0.1162,
-      "roic": 0.115
+      "roic": 0.114
     },
     {
       "ativo": "ABEV3",
@@ -891,7 +891,7 @@
       "dy": 0.0771,
       "growth": 0.2807,
       "retorno": 0.3578,
-      "roic": 0.359
+      "roic": 0.332
     },
     {
       "ativo": "EMBJ3",
@@ -1131,7 +1131,7 @@
       "dy": 0.0143,
       "growth": 0.08789999999999999,
       "retorno": 0.10210000000000001,
-      "roic": 0.292
+      "roic": 0.203
     },
     {
       "ativo": "LWSA3",
@@ -1171,7 +1171,7 @@
       "dy": 0.1243,
       "growth": 0.0044,
       "retorno": 0.1288,
-      "roic": 0.151
+      "roic": 0.166
     },
     {
       "ativo": "AZZA3",
