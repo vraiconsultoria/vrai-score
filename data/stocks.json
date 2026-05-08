@@ -1,6 +1,6 @@
 {
   "meta": {
-    "gerado_em": "2026-05-07T22:53:52.767Z",
+    "gerado_em": "2026-05-08T22:46:21.134Z",
     "total_ativos": 62,
     "setores": {
       "Bancos": 7,
@@ -18,7 +18,7 @@
     "fonte": "Yahoo Finance (preço, P/L, P/VP, DY, ROE, EV/EBITDA, Payout, Lucro, PL) + Fundamentus (ROIC, DL/EBITDA, margem) — auto",
     "versao": "2.1.0",
     "aviso": "Preços do último fechamento disponível no Yahoo Finance. Histórico de dividendos 5 anos ainda é snapshot manual.",
-    "fechamento_referencia": "2026-05-07"
+    "fechamento_referencia": "2026-05-08"
   },
   "stocks": [
     {
@@ -312,7 +312,7 @@
       "dy": 0.024,
       "growth": 0.13949999999999999,
       "retorno": 0.1634,
-      "roic": 0.137
+      "roic": 0.133
     },
     {
       "ativo": "CPFE3",
@@ -392,7 +392,7 @@
       "dy": 0.1093,
       "growth": 0.022000000000000002,
       "retorno": 0.1313,
-      "roic": 0.102
+      "roic": 0.096
     },
     {
       "ativo": "EGIE3",
@@ -412,7 +412,7 @@
       "dy": 0.0815,
       "growth": -0.0281,
       "retorno": 0.0535,
-      "roic": 0.108
+      "roic": 0.111
     },
     {
       "ativo": "CEGR3",
@@ -592,7 +592,7 @@
       "dy": 0.0661,
       "growth": 0.011899999999999999,
       "retorno": 0.0781,
-      "roic": 0.121
+      "roic": 0.123
     },
     {
       "ativo": "PGMN3",
@@ -632,7 +632,7 @@
       "dy": 0.0358,
       "growth": 0.0934,
       "retorno": 0.1292,
-      "roic": 0.12
+      "roic": 0.122
     },
     {
       "ativo": "PNVL3",
@@ -672,7 +672,7 @@
       "dy": 0.027200000000000002,
       "growth": 0.2298,
       "retorno": 0.257,
-      "roic": 0.202
+      "roic": 0.246
     },
     {
       "ativo": "PFRM3",
@@ -831,7 +831,7 @@
       "dy": 0.009399999999999999,
       "growth": -0.0827,
       "retorno": -0.0733,
-      "roic": 0.081
+      "roic": 0.083
     },
     {
       "ativo": "POMO4",
@@ -911,7 +911,7 @@
       "dy": 0.0039000000000000003,
       "growth": 0.0916,
       "retorno": 0.0955,
-      "roic": 0.085
+      "roic": 0.091
     },
     {
       "ativo": "RAIL3",
@@ -931,7 +931,7 @@
       "dy": 0.049,
       "growth": -0.047599999999999996,
       "retorno": 0.0013,
-      "roic": 0.123
+      "roic": 0.121
     },
     {
       "ativo": "VALE3",
@@ -1051,7 +1051,7 @@
       "dy": 0.0374,
       "growth": -0.0481,
       "retorno": -0.0108,
-      "roic": 0.007
+      "roic": -0.002
     },
     {
       "ativo": "JALL3",
@@ -1151,7 +1151,7 @@
       "dy": 0.011899999999999999,
       "growth": -0.1247,
       "retorno": -0.1127,
-      "roic": 0.05
+      "roic": 0.057
     },
     {
       "ativo": "INTB3",
@@ -1191,7 +1191,7 @@
       "dy": 0.10460000000000001,
       "growth": 0.028999999999999998,
       "retorno": 0.1335,
-      "roic": 0.084
+      "roic": 0.077
     },
     {
       "ativo": "RENT3",
@@ -1211,7 +1211,7 @@
       "dy": 0.0418,
       "growth": -0.0075,
       "retorno": 0.034300000000000004,
-      "roic": 0.119
+      "roic": 0.124
     },
     {
       "ativo": "MGLU3",
@@ -1231,7 +1231,7 @@
       "dy": 0.0355,
       "growth": 0.0128,
       "retorno": 0.0483,
-      "roic": 0.062
+      "roic": 0.061
     },
     {
       "ativo": "VIVA3",
@@ -1251,7 +1251,7 @@
       "dy": 0.0461,
       "growth": 0.1436,
       "retorno": 0.18969999999999998,
-      "roic": 0.178
+      "roic": 0.175
     }
   ]
 }
