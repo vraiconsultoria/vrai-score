@@ -1,6 +1,6 @@
 {
   "meta": {
-    "gerado_em": "2026-05-11T22:46:00.680Z",
+    "gerado_em": "2026-05-12T22:53:09.593Z",
     "total_ativos": 62,
     "setores": {
       "Bancos": 7,
@@ -18,7 +18,7 @@
     "fonte": "Yahoo Finance (preço, P/L, P/VP, DY, ROE, EV/EBITDA, Payout, Lucro, PL) + Fundamentus (ROIC, DL/EBITDA, margem) — auto",
     "versao": "2.1.0",
     "aviso": "Preços do último fechamento disponível no Yahoo Finance. Histórico de dividendos 5 anos ainda é snapshot manual.",
-    "fechamento_referencia": "2026-05-11"
+    "fechamento_referencia": "2026-05-12"
   },
   "stocks": [
     {
@@ -58,7 +58,7 @@
       "dy": 0.0917,
       "growth": 0.031,
       "retorno": 0.12269999999999999,
-      "roic": 0.003
+      "roic": 0.004
     },
     {
       "ativo": "BBAS3",
@@ -232,7 +232,7 @@
       "dy": 0.06559999999999999,
       "growth": 0.163,
       "retorno": 0.22870000000000001,
-      "roic": 0.174
+      "roic": 0.168
     },
     {
       "ativo": "UGPA3",
@@ -452,7 +452,7 @@
       "dy": 0.0632,
       "growth": 0.0278,
       "retorno": 0.0909,
-      "roic": 0.102
+      "roic": 0.096
     },
     {
       "ativo": "ISAE4",
