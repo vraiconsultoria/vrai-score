@@ -1,6 +1,6 @@
 {
   "meta": {
-    "gerado_em": "2026-05-13T22:58:00.282Z",
+    "gerado_em": "2026-05-14T22:49:54.429Z",
     "total_ativos": 62,
     "setores": {
       "Bancos": 7,
@@ -18,7 +18,7 @@
     "fonte": "Yahoo Finance (preço, P/L, P/VP, DY, ROE, EV/EBITDA, Payout, Lucro, PL) + Fundamentus (ROIC, DL/EBITDA, margem) — auto",
     "versao": "2.1.0",
     "aviso": "Preços do último fechamento disponível no Yahoo Finance. Histórico de dividendos 5 anos ainda é snapshot manual.",
-    "fechamento_referencia": "2026-05-13"
+    "fechamento_referencia": "2026-05-14"
   },
   "stocks": [
     {
@@ -352,7 +352,7 @@
       "dy": 0.0524,
       "growth": 0.023,
       "retorno": 0.0753,
-      "roic": 0.105
+      "roic": 0.102
     },
     {
       "ativo": "NEOE3",
@@ -492,7 +492,7 @@
       "dy": 0.0706,
       "growth": 0.2444,
       "retorno": 0.315,
-      "roic": 0.234
+      "roic": 0.228
     },
     {
       "ativo": "TAEE11",
@@ -971,7 +971,7 @@
       "dy": 0,
       "growth": -0.1555,
       "retorno": -0.1555,
-      "roic": 0.081
+      "roic": 0.08
     },
     {
       "ativo": "KLBN11",
@@ -1031,7 +1031,7 @@
       "dy": 0.0858,
       "growth": -0.0127,
       "retorno": 0.073,
-      "roic": 0.117
+      "roic": 0.098
     },
     {
       "ativo": "AGRO3",
