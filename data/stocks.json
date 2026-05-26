@@ -1,6 +1,6 @@
 {
   "meta": {
-    "gerado_em": "2026-05-25T22:52:36.178Z",
+    "gerado_em": "2026-05-26T23:02:05.912Z",
     "total_ativos": 62,
     "setores": {
       "Bancos": 7,
@@ -18,7 +18,7 @@
     "fonte": "Yahoo Finance (preço, P/L, P/VP, DY, ROE, EV/EBITDA, Payout, Lucro, PL) + Fundamentus (ROIC, DL/EBITDA, margem) — auto",
     "versao": "2.1.0",
     "aviso": "Preços do último fechamento disponível no Yahoo Finance. Histórico de dividendos 5 anos ainda é snapshot manual.",
-    "fechamento_referencia": "2026-05-25"
+    "fechamento_referencia": "2026-05-26"
   },
   "stocks": [
     {
@@ -1091,7 +1091,7 @@
       "dy": 0.0285,
       "growth": 0.050199999999999995,
       "retorno": 0.0787,
-      "roic": 0.056
+      "roic": 0.069
     },
     {
       "ativo": "KEPL3",
