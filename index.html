@@ -708,11 +708,11 @@ function app() {
       alertarDYAlto: true,
     },
 
-    metodoAtivo: 'retorno_pl',
+    metodoAtivo: 'magic_formula',
     metodos: {
       retorno_pl: {
         nome: 'Retorno / Preço-Lucro',
-        descricao: 'Padrão da casa: (Dividend Yield + Growth) dividido por Preço/Lucro (P/L). Premia empresas com bom retorno esperado e múltiplo baixo.',
+        descricao: 'Valor profundo: (Dividend Yield + Growth) dividido por Preço/Lucro (P/L). Premia ações baratas — mas como o retorno esperado já sobe quando o preço cai e ainda dividimos por P/L, o desconto pesa em dobro; tende a favorecer bancos regionais e small caps muito descontados. Use junto com os alertas de armadilha de valor.',
         calc: s => (s.retorno != null && s.p_l && s.p_l > 0) ? s.retorno / s.p_l : null,
         explicar: s => {
           if (s.retorno == null || !s.p_l) return 'Dados incompletos para este método.';
@@ -737,15 +737,13 @@ function app() {
         },
       },
       magic_formula: {
-        nome: 'Magic Formula (Greenblatt)',
-        descricao: 'Cruza barato (Preço/Lucro baixo, proxy de EV/EBIT) com qualidade (Return on Equity alto, proxy de Return on Invested Capital). Soma dos ranks — maior = melhor.',
-        calc: s => {
-          if (!s.p_l || s.p_l <= 0 || !s.roe || s.roe <= 0) return null;
-          return s.roe / s.p_l;
-        },
+        nome: 'Qualidade + Preço (Magic Formula)',
+        descricao: 'Padrão da casa. Soma a POSIÇÃO da empresa em qualidade (ROE alto) com a posição em preço (P/L baixo), entre todas as ações com lucro — exatamente como a Magic Formula de Joel Greenblatt. Equilibra os dois lados sem deixar o "barato" pesar em dobro. Nota de 0 a 1: maior = melhor combinação.',
+        calc: s => (s._mq ? s._mq.score : null),
         explicar: s => {
-          if (!s.p_l || !s.roe) return 'Sem Return on Equity (ROE) ou Preço/Lucro (P/L) válidos.';
-          return `Return on Equity de <strong>${(s.roe*100).toFixed(2)}%</strong> sobre Preço/Lucro de <strong>${s.p_l.toFixed(2)}</strong>. Greenblatt original usa EV/EBIT e Return on Invested Capital (ROIC) — aqui usamos P/L e ROE como proxies.`;
+          if (!s._mq) return 'Empresa sem lucro nos últimos 12 meses (ROE ou P/L não positivos) — fica fora deste ranking, que cruza qualidade com preço.';
+          const { roeRank, plRank, n } = s._mq;
+          return `Entre as <strong>${n}</strong> ações com lucro: <strong>${roeRank}º</strong> em qualidade (ROE ${(s.roe*100).toFixed(1)}%) e <strong>${plRank}º</strong> em preço (P/L ${s.p_l.toFixed(2)}). A nota soma as duas posições — quanto melhor nas duas pontas, maior. Greenblatt original usa EV/EBIT e ROIC; aqui usamos P/L e ROE como proxies.`;
         },
       },
       graham: {
@@ -792,6 +790,7 @@ function app() {
         const data = await res.json();
         this.stocks = data.stocks;
         this.meta = data.meta;
+        this._calcularMagicRanks();   // posições qualidade×preço (Magic Formula), uma vez por carga
       } catch (e) {
         console.error('Falha ao carregar data/stocks.json:', e);
         alert('Não consegui carregar os dados. Se você abriu o arquivo direto (file://), sirva via "python -m http.server" ou publique no GitHub Pages.');
@@ -818,6 +817,27 @@ function app() {
       if (/Utilit|Utilid/i.test(setor)) return Math.max(95, base + 10);
       if (/Telecom/i.test(setor)) return Math.max(100, base + 15);
       return base;
+    },
+
+    // Magic Formula (Greenblatt): ranqueia o universo por qualidade (ROE) e por
+    // preço (P/L) e SOMA as posições. Calculado uma vez por carga, sobre todas as
+    // ações com lucro — não muda quando você mexe nos filtros, então o ranking
+    // fica estável. Guarda as duas posições em s._mq para a explicação no detalhe.
+    _calcularMagicRanks() {
+      const key = s => s.ativo + '|' + (s.setor || '');
+      const universo = this.stocks.filter(s => s.roe > 0 && s.p_l > 0);
+      const n = universo.length;
+      const rankRoe = new Map();   // maior ROE = 1º (mais qualidade)
+      const rankPL = new Map();    // menor P/L = 1º (mais barato)
+      [...universo].sort((a, b) => b.roe - a.roe).forEach((s, i) => rankRoe.set(key(s), i + 1));
+      [...universo].sort((a, b) => a.p_l - b.p_l).forEach((s, i) => rankPL.set(key(s), i + 1));
+      this.stocks.forEach(s => {
+        const rq = rankRoe.get(key(s)), rp = rankPL.get(key(s));
+        // soma das posições: menor = melhor. Normaliza para (0,1], maior = melhor.
+        s._mq = (rq && rp && n > 1)
+          ? { roeRank: rq, plRank: rp, n, score: (2 * n + 1 - (rq + rp)) / (2 * n - 1) }
+          : null;
+      });
     },
 
     _processar(s) {
