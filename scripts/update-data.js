@@ -1,4 +1,4 @@
-// Vrai Score — Atualização automática de dados (v2.2)
+// Vrai Score — Atualização automática de dados (v2.3)
 // ------------------------------------------------------------
 // Roda no GitHub Actions a cada dia útil, após o fechamento da B3.
 //
@@ -9,6 +9,13 @@
 // Fallback de preço: Yahoo Finance chart v8
 //   (https://query1.finance.yahoo.com/v8/finance/chart/TICKER.SA). Esse endpoint
 //   NÃO exige "crumb"/cookie e funciona no GitHub Actions.
+//
+// Por que mudou da v2.2?
+//   Antes, os campos da metodologia (Growth, Retorno esperado e Dividendos)
+//   ficavam "congelados" no snapshot inicial: o preço e os fundamentos eram
+//   atualizados, mas o Growth/Retorno continuavam com o número antigo, ficando
+//   incoerentes com o ROE/Payout/DY atuais. Agora são recalculados ao vivo a
+//   cada atualização, com as fórmulas da planilha de referência.
 //
 // Por que mudou da v2.1?
 //   A v2.1 usava a biblioteca yahoo-finance2 (quoteSummary), que exige um
@@ -128,11 +135,14 @@ async function fetchFundamentus(ticker) {
     const lucro = num('Lucro Líquido');   // primeira ocorrência = 12 meses
     const plLiq = num('Patrim. Líq');
 
+    // Apenas fundamentos BRUTOS aqui. Os campos derivados (growth, retorno,
+    // dividendos) são calculados no merge, a partir dos valores já mesclados,
+    // para ficarem sempre coerentes com o ROE/Payout/DY/Lucro gravados na linha.
     return {
       preco: cotacao,
       preco_minimo_52s: num('Min 52 sem'),
       valor_mercado_bi: valorMerc != null ? Number((valorMerc / 1e9).toFixed(3)) : null,
-      p_l: num('P/L'),
+      p_l: num('P/L'),                      // P/L real de mercado (Valor Merc ÷ Lucro)
       p_vp: num('P/VP'),
       dy,                                   // já fracional
       roe: pct('ROE'),                      // já fracional
@@ -200,6 +210,23 @@ async function main() {
     set('div_liq_ebitda', f.div_liq_ebitda);
     set('lucro_bi', f.lucro_bi);
     set('patrimonio_liquido_bi', f.patrimonio_liquido_bi);
+
+    // ---------- Campos derivados (metodologia Vrai Score) ----------
+    // Calculados a partir dos valores JÁ mesclados (os novos quando o Fundamentus
+    // trouxe, ou os preservados), nunca de um snapshot antigo. Assim Growth,
+    // Retorno e Dividendos ficam SEMPRE coerentes com o ROE/Payout/DY/Lucro
+    // gravados nesta mesma linha — acaba a divergência dos números "congelados"
+    // (ex.: ITUB4 mostrava growth 5,4% enquanto ROE×(1−Payout) sobre os dados
+    // atuais dá 4,2%).
+    //   Growth     = ROE × (1 − Payout)     (parte do lucro reinvestida)
+    //   Dividendos = Lucro × Payout         (≡ DY × Valor de Mercado)
+    //   Retorno    = DY + Growth
+    const g = (merged.roe != null && merged.payout != null)
+      ? merged.roe * (1 - merged.payout) : null;
+    set('growth', g);
+    set('dividendos_bi', (merged.lucro_bi != null && merged.payout != null)
+      ? merged.lucro_bi * merged.payout : null);
+    set('retorno', (merged.dy != null && g != null) ? merged.dy + g : null);
     return merged;
   });
 
@@ -210,8 +237,8 @@ async function main() {
       fechamento_referencia: todayBRT(),
       total_ativos: updated.length,
       fonte: 'Fundamentus (cotação de fechamento + fundamentos) com fallback de preço no Yahoo Finance — auto',
-      versao: '2.2.0',
-      aviso: 'Cotação e fundamentos do último fechamento disponível no Fundamentus. Histórico de dividendos 5 anos ainda é snapshot manual.',
+      versao: '2.3.0',
+      aviso: 'Cotação e fundamentos do último fechamento disponível no Fundamentus. Growth, Retorno esperado e Dividendos são calculados ao vivo (Growth = ROE×(1−Payout); Dividendos = Lucro×Payout; Retorno = DY+Growth). Histórico de dividendos 5 anos ainda é snapshot manual.',
     },
     stocks: updated,
   };
