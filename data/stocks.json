@@ -1,6 +1,6 @@
 {
   "meta": {
-    "gerado_em": "2026-05-29T01:20:08.209Z",
+    "gerado_em": "2026-05-29T23:04:06.101Z",
     "total_ativos": 62,
     "setores": {
       "Bancos": 7,
@@ -18,7 +18,7 @@
     "fonte": "Fundamentus (cotação de fechamento + fundamentos) com fallback de preço no Yahoo Finance — auto",
     "versao": "2.3.0",
     "aviso": "Cotação e fundamentos do último fechamento disponível no Fundamentus. Growth, Retorno esperado e Dividendos são calculados ao vivo (Growth = ROE×(1−Payout); Dividendos = Lucro×Payout; Retorno = DY+Growth). Histórico de dividendos 5 anos ainda é snapshot manual.",
-    "fechamento_referencia": "2026-05-28"
+    "fechamento_referencia": "2026-05-29"
   },
   "stocks": [
     {
@@ -802,8 +802,8 @@
       "empresa": "JBS",
       "descricao_longa": null,
       "setor": "Consumo Básico",
-      "preco": 65.03,
-      "preco_minimo_52s": 0,
+      "preco": 61,
+      "preco_minimo_52s": 37.03,
       "patrimonio_liquido_bi": 9.51,
       "roe": 0.21530000000000002,
       "lucro_bi": 2.05,
