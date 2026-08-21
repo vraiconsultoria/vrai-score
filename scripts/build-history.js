@@ -250,7 +250,11 @@ async function coletarTesouro() {
       // Bucket de duration: a covariância de um papel individual não é
       // estacionária (a volatilidade decai à medida que o vencimento chega),
       // então o risco deve vir da CLASSE, não do papel.
-      bucket: anosVenc < 3 ? 'curto' : anosVenc < 8 ? 'medio' : 'longo',
+      // O corte em 15 anos separa os IPCA+ tradicionais dos Renda+/Educa+, que
+      // vão até 2084 — juntar 8 e 58 anos no mesmo bucket misturaria vol de
+      // 11% com vol de 50%.
+      bucket: anosVenc < 3 ? 'curto' : anosVenc < 8 ? 'medio'
+        : anosVenc < 15 ? 'longo' : 'ultralongo',
       vol_mtm: arred(volAnualizada(serie, 504), 4),   // ~2 anos de pregões
     });
     seriesPU.set(`${tipo} ${vencBR}`, new Map([...serie].map(([d, v]) => [d, v.pu])));
@@ -452,6 +456,29 @@ async function main() {
 
   // 2) proventos.json — o histórico de pagamento que o ranking precisa
   escrever('proventos.json', { meta, ativos: proventos });
+
+  // 2b) indicadores.json — taxas correntes direto da FONTE, sem passar pelo
+  // alinhamento no calendário da B3. Reconstruir a taxa de hoje a partir do
+  // índice alinhado dá errado: o CDI é publicado em dias bancários e o índice
+  // é reamostrado em pregões, então dias sobram ou faltam e a anualização de
+  // janela curta erra por 10% ou mais. Aqui fica o número cru.
+  const dataCDI = [...cdiPct.keys()].sort().pop();
+  const cdiDiario = cdiPct.get(dataCDI);
+  const mesesIPCA = [...ipcaPct.keys()].sort().slice(-12);
+  const ipca12m = mesesIPCA.reduce((s, m) => s * (1 + ipcaPct.get(m) / 100), 1) - 1;
+  escrever('indicadores.json', {
+    meta: { ...meta, fonte: 'BCB SGS 12 (CDI a.d.) e 433 (IPCA a.m.)' },
+    cdi: {
+      data: dataCDI,
+      taxa_diaria: cdiDiario,
+      taxa_anual: arred((1 + cdiDiario / 100) ** 252 - 1, 6),
+    },
+    ipca: {
+      ultimo_mes: mesesIPCA[mesesIPCA.length - 1],
+      acumulado_12m: arred(ipca12m, 6),
+      meses_no_acumulado: mesesIPCA.length,
+    },
+  });
 
   // 3) tesouro.json — títulos vivos + série mensal de PU
   const mesesTD = new Set();
