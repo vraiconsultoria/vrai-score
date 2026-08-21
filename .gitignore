@@ -1,0 +1,6 @@
+# Insumo bruto do cálculo de risco: reconstruído a cada execução do coletor.
+# Fica fora do git de propósito — seria ~1 MB reescrito todo dia útil.
+.cache/
+
+node_modules/
+scripts/node_modules/
