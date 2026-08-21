@@ -380,82 +380,308 @@
     </section>
 
     <!-- === ABA CARTEIRA === -->
+    <!-- === ABA CARTEIRA — laboratório === -->
     <section x-show="abaAtiva === 'Carteira'" class="space-y-4">
-      <div class="rounded-2xl border p-4" :class="tema === 'light' ? 'bg-white border-paper-200' : 'bg-navy-800/40 border-navy-700'">
-        <h2 class="font-display text-xl font-bold mb-3">Montar carteira</h2>
-        <p class="text-sm opacity-70 mb-3">Adicione ativos e defina pesos. Os indicadores ponderados aparecem abaixo.</p>
-        <div class="grid sm:grid-cols-2 gap-3 mb-4">
-          <div>
-            <label class="text-xs opacity-60 mb-1 block">Adicionar ativo</label>
-            <select @change="adicionarCarteira($event.target.value); $event.target.value = ''"
-              class="w-full px-3 py-2 rounded-lg border text-sm"
-              :class="tema === 'light' ? 'bg-paper-50 border-paper-200' : 'bg-navy-900 border-navy-700'">
-              <option value="">— escolha um ativo —</option>
-              <template x-for="s in stocksFiltradas" :key="s.ativo + s.setor">
-                <option :value="s.ativo + '|' + s.setor" x-text="s.ativo + ' · ' + s.setor"></option>
-              </template>
-            </select>
-          </div>
-        </div>
 
-        <div x-show="carteira.length > 0">
-          <table class="w-full text-sm">
-            <thead><tr class="text-left border-b" :class="tema === 'light' ? 'border-paper-200' : 'border-navy-700'">
-              <th class="p-2">Ativo</th>
-              <th class="p-2 text-right">Dividend Yield</th>
-              <th class="p-2 text-right">Peso %</th>
-              <th class="p-2"></th>
-            </tr></thead>
-            <tbody>
-              <template x-for="(c, idx) in carteira" :key="c.ativo + c.setor">
-                <tr class="border-b" :class="tema === 'light' ? 'border-paper-100' : 'border-navy-700/60'">
-                  <td class="p-2">
-                    <div class="font-semibold" x-text="c.ativo"></div>
-                    <div class="text-xs opacity-60" x-text="c.setor"></div>
-                  </td>
-                  <td class="p-2 text-right" x-text="fmtPct(c.dy)"></td>
-                  <td class="p-2 text-right">
-                    <input type="number" min="0" max="100" step="1" x-model.number="c.peso"
-                      class="w-20 px-2 py-1 rounded border text-right"
-                      :class="tema === 'light' ? 'bg-paper-50 border-paper-200' : 'bg-navy-900 border-navy-700'" />
-                  </td>
-                  <td class="p-2 text-right">
-                    <button @click="carteira.splice(idx, 1)"
-                      class="text-red-400 hover:text-red-300 text-xs">remover</button>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-            <tfoot class="font-bold">
-              <tr>
-                <td class="p-2">Total · Dividend Yield ponderado</td>
-                <td class="p-2 text-right text-gold-400" x-text="fmtPct(carteiraDYPonderado)"></td>
-                <td class="p-2 text-right" x-text="carteiraPesoTotal + '%'"></td>
-                <td></td>
-              </tr>
-            </tfoot>
-          </table>
+      <div x-show="!risco" class="rounded-2xl border p-8 text-center text-sm opacity-70"
+        :class="tema === 'light' ? 'bg-white border-paper-200' : 'bg-navy-800/40 border-navy-700'">
+        <span x-show="carregandoHist">Carregando histórico de 10 anos…</span>
+        <span x-show="!carregandoHist">Histórico indisponível. Rode <code>node scripts/build-history.js</code> e <code>node scripts/build-risk.js</code>.</span>
+      </div>
 
-          <div class="mt-3 text-xs opacity-70" x-show="carteiraPesoTotal !== 100">
-            <span class="text-amber-400">⚠</span> Pesos somam <span x-text="carteiraPesoTotal"></span>%. Ajuste para 100% para um cálculo realista.
+      <template x-if="risco">
+      <div class="space-y-4">
+
+        <!-- ---------- MONTAGEM ---------- -->
+        <div class="rounded-2xl border p-4"
+          :class="tema === 'light' ? 'bg-white border-paper-200' : 'bg-navy-800/40 border-navy-700'">
+          <h2 class="font-display text-xl font-bold mb-1">Montar carteira</h2>
+          <p class="text-sm opacity-70 mb-4">
+            Ações e títulos públicos na mesma conta. Risco, retorno e fronteira recalculam a cada mudança de peso.
+          </p>
+
+          <div class="grid sm:grid-cols-2 gap-3 mb-4">
+            <div>
+              <label class="text-xs opacity-60 mb-1 block">Adicionar ação</label>
+              <select @change="addAcao($event.target.value); $event.target.value = ''"
+                class="w-full px-3 py-2 rounded-lg border text-sm"
+                :class="tema === 'light' ? 'bg-paper-50 border-paper-200' : 'bg-navy-900 border-navy-700'">
+                <option value="">— escolha uma ação —</option>
+                <template x-for="s in acoesDisponiveis" :key="s.ativo + s.setor">
+                  <option :value="s.ativo" x-text="s.ativo + ' · ' + s.setor"></option>
+                </template>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs opacity-60 mb-1 block">Adicionar título público</label>
+              <select @change="addTitulo($event.target.value); $event.target.value = ''"
+                class="w-full px-3 py-2 rounded-lg border text-sm"
+                :class="tema === 'light' ? 'bg-paper-50 border-paper-200' : 'bg-navy-900 border-navy-700'">
+                <option value="">— escolha um título —</option>
+                <template x-for="t in risco.titulos" :key="t.id">
+                  <option :value="t.id" x-text="t.id + ' · ' + fmt(t.taxa_compra) + '%'"></option>
+                </template>
+              </select>
+            </div>
           </div>
 
-          <div class="mt-4 p-3 rounded-lg text-xs" :class="tema === 'light' ? 'bg-paper-100' : 'bg-navy-900/50'">
-            <strong>Diversificação setorial:</strong>
-            <div class="mt-1 flex flex-wrap gap-2">
-              <template x-for="(p, setor) in carteiraSetores" :key="setor">
-                <span class="px-2 py-0.5 rounded-full bg-roxo-800 text-paper-50">
-                  <span x-text="setor"></span>: <strong x-text="p + '%'"></strong>
-                </span>
+          <!-- modo de tratamento dos títulos -->
+          <div class="mb-4 p-3 rounded-xl border text-xs"
+            :class="tema === 'light' ? 'bg-paper-100 border-paper-200' : 'bg-navy-900/50 border-navy-700'">
+            <div class="flex flex-wrap items-center gap-2 mb-1.5">
+              <strong class="text-gold-400">Títulos:</strong>
+              <template x-for="m in [['carrego','Carrego até o vencimento'],['mtm','Marcação a mercado']]" :key="m[0]">
+                <button @click="carteiraModo = m[0]"
+                  class="px-2.5 py-1 rounded-full border text-xs transition-colors"
+                  :class="carteiraModo === m[0]
+                    ? 'bg-gold-500 text-navy-900 border-gold-500 font-semibold'
+                    : (tema === 'light' ? 'border-paper-200 hover:bg-paper-50' : 'border-navy-700 hover:bg-navy-800')"
+                  x-text="m[1]"></button>
               </template>
+            </div>
+            <p class="opacity-70 leading-relaxed" x-show="carteiraModo === 'carrego'">
+              Você recebe a taxa contratada e a oscilação de preço não se realiza — o título entra com volatilidade
+              próxima de zero. É o tratamento coerente com Buy and Hold.
+            </p>
+            <p class="opacity-70 leading-relaxed" x-show="carteiraModo === 'mtm'">
+              Assume que você pode vender antes do vencimento, então vale a volatilidade real de mercado. Um IPCA+ longo
+              chega a oscilar como ação — o otimizador vai tratá-lo como ativo de risco.
+            </p>
+          </div>
+
+          <div x-show="carteira.length === 0" class="text-center opacity-60 py-8 text-sm">
+            Nenhum ativo ainda. Adicione acima para começar.
+          </div>
+
+          <div x-show="carteira.length > 0" class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead><tr class="text-left border-b" :class="tema === 'light' ? 'border-paper-200' : 'border-navy-700'">
+                <th class="p-2">Ativo</th>
+                <th class="p-2 text-right">Retorno esperado</th>
+                <th class="p-2 text-right">Volatilidade</th>
+                <th class="p-2 text-right">Peso %</th>
+                <th class="p-2"></th>
+              </tr></thead>
+              <tbody>
+                <template x-for="(c, idx) in carteira" :key="c.id">
+                  <tr class="border-b" :class="tema === 'light' ? 'border-paper-100' : 'border-navy-700/60'">
+                    <td class="p-2">
+                      <div class="font-semibold flex items-center gap-1.5">
+                        <span x-text="c.nome"></span>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded-full"
+                          :class="c.tipo === 'acao' ? 'bg-roxo-800 text-paper-50' : 'bg-gold-600/30 text-gold-300'"
+                          x-text="c.tipo === 'acao' ? 'ação' : 'título'"></span>
+                      </div>
+                      <div class="text-xs opacity-60" x-text="c.sub"></div>
+                    </td>
+                    <td class="p-2 text-right" x-text="fmtPct(retEsperadoDe(c))"></td>
+                    <td class="p-2 text-right" x-text="fmtPct(volDe(c))"></td>
+                    <td class="p-2 text-right">
+                      <input type="number" min="0" max="100" step="1" x-model.number="c.peso"
+                        class="w-20 px-2 py-1 rounded border text-right"
+                        :class="tema === 'light' ? 'bg-paper-50 border-paper-200' : 'bg-navy-900 border-navy-700'" />
+                    </td>
+                    <td class="p-2 text-right">
+                      <button @click="carteira.splice(idx, 1)" class="text-red-400 hover:text-red-300 text-xs">remover</button>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+
+            <div class="mt-3 flex flex-wrap items-center gap-2 text-xs">
+              <button @click="igualarPesos()" class="px-2.5 py-1 rounded-lg border"
+                :class="tema === 'light' ? 'border-paper-200 hover:bg-paper-100' : 'border-navy-700 hover:bg-navy-800'">
+                distribuir igualmente
+              </button>
+              <button @click="normalizarPesos()" class="px-2.5 py-1 rounded-lg border"
+                :class="tema === 'light' ? 'border-paper-200 hover:bg-paper-100' : 'border-navy-700 hover:bg-navy-800'">
+                normalizar para 100%
+              </button>
+              <button @click="carteira = []" class="px-2.5 py-1 rounded-lg border text-red-400"
+                :class="tema === 'light' ? 'border-paper-200 hover:bg-paper-100' : 'border-navy-700 hover:bg-navy-800'">
+                limpar
+              </button>
+              <span class="opacity-60 ml-auto">
+                Soma: <strong x-text="pesoTotal + '%'"></strong>
+                <span x-show="pesoTotal !== 100" class="text-amber-400"> · pesos são normalizados para o cálculo</span>
+              </span>
             </div>
           </div>
         </div>
 
-        <div x-show="carteira.length === 0" class="text-center opacity-60 py-8 text-sm">
-          Nenhum ativo ainda. Adicione acima para começar.
+        <!-- ---------- INDICADORES ---------- -->
+        <template x-if="carteira.length > 0 && metricas">
+        <div class="space-y-4">
+
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <template x-for="k in indicadoresCards" :key="k.rot">
+              <div class="rounded-xl border p-3"
+                :class="tema === 'light' ? 'bg-white border-paper-200' : 'bg-navy-800/40 border-navy-700'">
+                <div class="text-xs opacity-60" x-text="k.rot"></div>
+                <div class="font-display text-2xl font-bold mt-0.5" :class="k.cor" x-text="k.val"></div>
+                <div class="text-[11px] opacity-55 mt-0.5 leading-snug" x-text="k.nota"></div>
+              </div>
+            </template>
+          </div>
+
+          <!-- avisos de interpretação -->
+          <div x-show="metricas.premioNegativo"
+            class="rounded-xl border p-3 text-xs leading-relaxed"
+            :class="tema === 'light' ? 'bg-amber-50 border-amber-200 text-ink-800' : 'bg-amber-900/20 border-amber-700/40 text-paper-50/90'">
+            <strong class="text-amber-400">Cuidado com o alpha nesta janela.</strong>
+            O Ibovespa rendeu <strong x-text="fmtPct(risco.benchmarks['^BVSP'].ret_hist)"></strong> ao ano contra
+            <strong x-text="fmtPct(risco.meta.rf_janela)"></strong> do CDI, ou seja, o prêmio de risco foi
+            <strong>negativo</strong>. Com prêmio negativo o alpha de Jensen inverte: passa a premiar beta baixo e a
+            punir beta alto. O número está correto, a leitura habitual é que não vale.
+          </div>
+
+          <div class="rounded-xl border p-3 text-xs leading-relaxed"
+            :class="tema === 'light' ? 'bg-paper-100 border-paper-200' : 'bg-navy-900/50 border-navy-700'">
+            <strong class="text-gold-400">Benchmark composto:</strong>
+            alpha, beta e tracking error são medidos contra
+            <strong x-text="fmt(metricas.pesoAcoes * 100, 0) + '% Ibovespa + ' + fmt((1 - metricas.pesoAcoes) * 100, 0) + '% CDI'"></strong>,
+            espelhando a sua alocação. Comparar uma carteira com renda fixa só ao Ibovespa não diria nada.
+            Tracking error alto aqui não é defeito — numa carteira de dividendos, desviar do índice é o objetivo.
+          </div>
+
+          <!-- ---------- ROI ACUMULADO ---------- -->
+          <div class="rounded-2xl border p-4"
+            :class="tema === 'light' ? 'bg-white border-paper-200' : 'bg-navy-800/40 border-navy-700'">
+            <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
+              <h3 class="font-display text-lg font-bold">Retorno acumulado</h3>
+              <span class="text-xs opacity-60" x-show="grafico"
+                x-text="'de ' + grafico.de + ' a ' + grafico.ate + ' · rebalanceamento mensal'"></span>
+            </div>
+            <p class="text-xs opacity-60 mb-3" x-show="grafico && grafico.recorte">
+              A janela começa em <span x-text="grafico.de"></span> porque é quando todos os ativos escolhidos passam a ter histórico.
+            </p>
+
+            <template x-if="grafico">
+              <div>
+                <div x-html="grafico.svg" class="w-full"></div>
+                <div class="flex flex-wrap gap-3 mt-2 text-xs">
+                  <template x-for="l in grafico.linhas" :key="'leg'+l.nome">
+                    <span class="flex items-center gap-1.5">
+                      <span class="inline-block w-3 h-0.5 rounded" :style="'background:' + l.cor"></span>
+                      <span x-text="l.nome"></span>
+                      <strong :class="l.total >= 0 ? 'text-emerald-400' : 'text-red-400'"
+                        x-text="(l.total >= 0 ? '+' : '') + fmt(l.total * 100, 1) + '%'"></strong>
+                    </span>
+                  </template>
+                </div>
+                <p class="text-[11px] opacity-55 mt-2 leading-snug">
+                  Ações usam preço ajustado — proventos já entram reinvestidos. IPCA é o índice de inflação: o que
+                  ficar acima dele é ganho real.
+                </p>
+              </div>
+            </template>
+          </div>
+
+          <!-- ---------- FRONTEIRA EFICIENTE ---------- -->
+          <div class="rounded-2xl border p-4"
+            :class="tema === 'light' ? 'bg-white border-paper-200' : 'bg-navy-800/40 border-navy-700'">
+            <h3 class="font-display text-lg font-bold mb-1">Fronteira eficiente</h3>
+            <p class="text-xs opacity-60 mb-3">
+              Cada ponto é uma combinação possível dos seus ativos. Quanto mais para cima e para a esquerda, melhor a
+              relação retorno/risco.
+            </p>
+
+            <div x-show="carteira.length < 2" class="text-sm opacity-60 py-6 text-center">
+              Adicione ao menos dois ativos para ver a fronteira.
+            </div>
+
+            <template x-if="fronteira">
+              <div>
+                <div x-html="fronteira.svg" class="w-full"></div>
+                <div class="grid sm:grid-cols-3 gap-2 mt-2 text-xs">
+                  <template x-for="p in fronteira.destaques" :key="p.rot">
+                    <div class="rounded-lg border p-2"
+                      :class="tema === 'light' ? 'bg-paper-50 border-paper-200' : 'bg-navy-900/50 border-navy-700'">
+                      <div class="flex items-center gap-1.5 font-semibold">
+                        <span class="inline-block w-2.5 h-2.5 rounded-full" :style="'background:' + p.cor"></span>
+                        <span x-text="p.rot"></span>
+                      </div>
+                      <div class="opacity-70 mt-0.5">
+                        retorno <strong x-text="fmtPct(p.r)"></strong> · risco <strong x-text="fmtPct(p.v)"></strong>
+                        <span x-show="p.sharpe != null"> · Sharpe <strong x-text="fmt(p.sharpe)"></strong></span>
+                      </div>
+                      <div class="opacity-55 mt-1 text-[11px]" x-show="p.composicao" x-text="p.composicao"></div>
+                    </div>
+                  </template>
+                </div>
+                <p class="text-[11px] opacity-55 mt-2 leading-snug">
+                  Amostragem de <span x-text="fronteira.n"></span> carteiras aleatórias, com teto de
+                  <span x-text="fmt(fronteira.teto * 100, 0)"></span>% por ativo — sem o teto, o otimizador concentra
+                  quase tudo num papel só. A correlação usada vem encolhida na direção da média
+                  (<span x-text="fmt(risco.meta.shrinkage * 100, 0)"></span>%) para conter erro de estimativa.
+                </p>
+              </div>
+            </template>
+          </div>
+
+          <!-- ---------- DIVERSIFICAÇÃO REAL ---------- -->
+          <div class="rounded-2xl border p-4"
+            :class="tema === 'light' ? 'bg-white border-paper-200' : 'bg-navy-800/40 border-navy-700'">
+            <h3 class="font-display text-lg font-bold mb-1">Diversificação de verdade</h3>
+            <p class="text-xs opacity-60 mb-3">
+              Diversificação se mede por correlação, não por rótulo de setor. Dois ativos de setores diferentes que
+              andam juntos são uma aposta só.
+            </p>
+
+            <div class="flex flex-wrap gap-4 mb-3 text-sm">
+              <div>
+                <div class="text-xs opacity-60">Correlação média da carteira</div>
+                <div class="font-display text-2xl font-bold"
+                  :class="metricas.corrMedia > 0.6 ? 'text-amber-400' : 'text-emerald-400'"
+                  x-text="fmt(metricas.corrMedia)"></div>
+              </div>
+              <div>
+                <div class="text-xs opacity-60">Redução de risco pela diversificação</div>
+                <div class="font-display text-2xl font-bold text-emerald-400"
+                  x-text="fmt(metricas.beneficioDiversificacao * 100, 1) + '%'"></div>
+                <div class="text-[11px] opacity-55">ante a soma ponderada das volatilidades</div>
+              </div>
+            </div>
+
+            <div x-show="paresAltos.length > 0">
+              <div class="text-xs opacity-70 mb-1.5">Pares que andam quase juntos:</div>
+              <div class="flex flex-wrap gap-2">
+                <template x-for="p in paresAltos" :key="p.a + p.b">
+                  <span class="px-2 py-1 rounded-lg text-xs border"
+                    :class="tema === 'light' ? 'bg-amber-50 border-amber-200' : 'bg-amber-900/20 border-amber-700/40'">
+                    <span x-text="p.a"></span> × <span x-text="p.b"></span>
+                    <strong class="text-amber-400 ml-1" x-text="fmt(p.c)"></strong>
+                  </span>
+                </template>
+              </div>
+            </div>
+            <div x-show="paresAltos.length === 0 && carteira.length > 1" class="text-xs opacity-60">
+              Nenhum par com correlação acima de 0,75. Boa dispersão.
+            </div>
+
+            <div class="mt-3 pt-3 border-t" :class="tema === 'light' ? 'border-paper-200' : 'border-navy-700'">
+              <div class="text-xs opacity-70 mb-1.5">Composição por classe:</div>
+              <div class="flex flex-wrap gap-2">
+                <template x-for="(p, cl) in composicaoClasses" :key="cl">
+                  <span class="px-2 py-0.5 rounded-full text-xs bg-roxo-800 text-paper-50">
+                    <span x-text="cl"></span>: <strong x-text="fmt(p * 100, 1) + '%'"></strong>
+                  </span>
+                </template>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-[11px] opacity-50 leading-relaxed px-1">
+            Uso educacional. Retorno esperado das ações é Dividend Yield + Growth pela metodologia deste app, não
+            garantia. Retorno de título é a taxa contratada na data-base
+            <span x-text="formatarData(risco.meta.gerado_em)"></span>, antes de imposto de renda e da taxa de custódia
+            da B3. Não constitui recomendação de investimento.
+          </p>
         </div>
+        </template>
       </div>
+      </template>
     </section>
 
     <!-- === ABA GLOSSÁRIO === -->
@@ -697,6 +923,13 @@ function app() {
     detalhe: null,
     comparando: [],
     carteira: [],
+    // Laboratório de carteira: carregados sob demanda em carregarHistorico()
+    risco: null,
+    mensalHist: null,
+    tesouroHist: null,
+    carregandoHist: false,
+    carteiraModo: 'carrego',
+    _idx: {}, _titulos: {}, _fkey: null, _fcache: null,
 
     // Filtros — valores diretos das UIs (% em percentual, P/L em número bruto)
     filtros: {
@@ -795,6 +1028,9 @@ function app() {
         console.error('Falha ao carregar data/stocks.json:', e);
         alert('Não consegui carregar os dados. Se você abriu o arquivo direto (file://), sirva via "python -m http.server" ou publique no GitHub Pages.');
       }
+
+      // Histórico em segundo plano: a tela já é utilizável sem ele.
+      this.carregarHistorico();
 
     },
 
@@ -924,25 +1160,414 @@ function app() {
       if (idx >= 0) this.comparando.splice(idx, 1);
       else if (this.comparando.length < 5) this.comparando.push(s);
     },
-    adicionarCarteira(val) {
-      if (!val) return;
-      const [ativo, setor] = val.split('|');
-      const s = this.stocksFiltradas.find(x => x.ativo === ativo && x.setor === setor);
+    // === CARTEIRA — laboratório ===
+    // Todo o cálculo abaixo sai de data/historico/risco.json: vetor de retornos
+    // esperados, vetor de volatilidades e matriz de correlação. Com esses três,
+    // qualquer subconjunto de ativos tem risco e fronteira calculados na hora,
+    // sem baixar série. O histórico mensal só entra no gráfico de retorno.
+
+    async carregarHistorico() {
+      if (this.risco || this.carregandoHist) return;
+      this.carregandoHist = true;
+      try {
+        const v = '?v=' + Date.now();
+        const [r, m, t] = await Promise.all([
+          fetch('data/historico/risco.json' + v).then(x => x.json()),
+          fetch('data/historico/mensal.json' + v).then(x => x.json()),
+          fetch('data/historico/tesouro.json' + v).then(x => x.json()),
+        ]);
+        this._idx = Object.fromEntries(r.ids.map((k, i) => [k, i]));
+        this._titulos = Object.fromEntries(r.titulos.map(t => [t.id, t]));
+        this.mensalHist = m;
+        this.tesouroHist = t;
+        this.risco = r;
+      } catch (e) {
+        console.error('Falha ao carregar histórico:', e);
+      }
+      this.carregandoHist = false;
+    },
+
+    // Só entram ações com série: sem histórico não há risco nem correlação.
+    // Deduplicado por ticker — RADL3 e KEPL3 aparecem em dois setores.
+    get acoesDisponiveis() {
+      if (!this.risco) return [];
+      const vistos = new Set();
+      return this.stocksFiltradas.filter(s => {
+        if (vistos.has(s.ativo) || !this.risco.ativos[s.ativo]) return false;
+        vistos.add(s.ativo);
+        return true;
+      });
+    },
+
+    addAcao(ticker) {
+      if (!ticker || this.carteira.find(c => c.id === ticker)) return;
+      const s = this.stocks.find(x => x.ativo === ticker);
       if (!s) return;
-      if (this.carteira.find(c => c.ativo === ativo && c.setor === setor)) return;
-      this.carteira.push({ ...s, peso: 0 });
+      this.carteira.push({ tipo: 'acao', id: ticker, nome: ticker, sub: s.setor, peso: 0 });
+      this.igualarPesos();
     },
-    get carteiraPesoTotal() {
-      return this.carteira.reduce((s, c) => s + (Number(c.peso) || 0), 0);
+    addTitulo(id) {
+      if (!id || this.carteira.find(c => c.id === id)) return;
+      const t = this._titulos[id];
+      if (!t) return;
+      const venc = t.vencimento.split('-').reverse().join('/');
+      this.carteira.push({
+        tipo: 'titulo', id, nome: t.tipo,
+        sub: `vence ${venc} · ${t.indexador} · ${this.fmt(t.taxa_compra)}%`, peso: 0,
+      });
+      this.igualarPesos();
     },
-    get carteiraDYPonderado() {
-      const tot = this.carteiraPesoTotal || 1;
-      return this.carteira.reduce((s, c) => s + ((c.dy || 0) * (Number(c.peso) || 0) / tot), 0);
+    igualarPesos() {
+      const n = this.carteira.length;
+      if (!n) return;
+      const p = Math.round(100 / n);
+      this.carteira.forEach((c, i) => { c.peso = i === n - 1 ? 100 - p * (n - 1) : p; });
     },
-    get carteiraSetores() {
-      const out = {};
-      for (const c of this.carteira) out[c.setor] = (out[c.setor] || 0) + (Number(c.peso) || 0);
+    normalizarPesos() {
+      const tot = this.pesoTotal;
+      if (!tot) return this.igualarPesos();
+      this.carteira.forEach(c => { c.peso = Math.round((Number(c.peso) || 0) / tot * 1000) / 10; });
+    },
+    get pesoTotal() {
+      return Math.round(this.carteira.reduce((s, c) => s + (Number(c.peso) || 0), 0) * 10) / 10;
+    },
+    // Pesos sempre normalizados para o cálculo: soma diferente de 100 não deve
+    // produzir risco errado, só um aviso na tela.
+    get pesos() {
+      const tot = this.carteira.reduce((s, c) => s + (Number(c.peso) || 0), 0) || 1;
+      return this.carteira.map(c => (Number(c.peso) || 0) / tot);
+    },
+
+    // --- acesso a risco por item ---
+    _ativoRisco(c) {
+      if (!this.risco) return null;
+      if (c.tipo === 'acao') return this.risco.ativos[c.id] || null;
+      const t = this._titulos[c.id];
+      return t && t.classe_risco ? this.risco.ativos[t.classe_risco] : null;
+    },
+    _matrizId(c) {
+      if (c.tipo === 'acao') return c.id;
+      const t = this._titulos[c.id];
+      return t ? t.classe_risco : null;
+    },
+    _corr(a, b) {
+      const ia = this._idx[this._matrizId(a)], ib = this._idx[this._matrizId(b)];
+      if (ia == null || ib == null) return this._matrizId(a) === this._matrizId(b) ? 1 : 0;
+      return this.risco.correlacao[ia][ib];
+    },
+    retEsperadoDe(c) {
+      if (c.tipo === 'acao') { const a = this.risco.ativos[c.id]; return a ? a.ret_esperado : null; }
+      const t = this._titulos[c.id];
+      return t ? t.ret_esperado_nominal : null;
+    },
+    // A volatilidade do título depende do modo: quem carrega até o vencimento
+    // não realiza a oscilação de mercado.
+    volDe(c) {
+      if (c.tipo === 'acao') { const a = this.risco.ativos[c.id]; return a ? a.vol : null; }
+      const t = this._titulos[c.id];
+      if (!t) return null;
+      return this.carteiraModo === 'carrego' ? (t.vol_carrego || 0) : (t.vol_mtm || 0);
+    },
+    _betaDe(c) {
+      if (c.tipo === 'acao') { const a = this.risco.ativos[c.id]; return a && a.beta != null ? a.beta : 0; }
+      if (this.carteiraModo === 'carrego') return 0;
+      const a = this._ativoRisco(c);
+      return a && a.beta != null ? a.beta : 0;
+    },
+
+    // --- métricas da carteira ---
+    get metricas() {
+      if (!this.risco || !this.carteira.length) return null;
+      const w = this.pesos, itens = this.carteira;
+      const n = itens.length;
+
+      let ret = 0, beta = 0, alpha = 0, somaVol = 0, pesoAcoes = 0;
+      for (let i = 0; i < n; i++) {
+        ret += w[i] * (this.retEsperadoDe(itens[i]) || 0);
+        beta += w[i] * this._betaDe(itens[i]);
+        somaVol += w[i] * (this.volDe(itens[i]) || 0);
+        if (itens[i].tipo === 'acao') {
+          pesoAcoes += w[i];
+          const a = this.risco.ativos[itens[i].id];
+          if (a && a.alpha != null) alpha += w[i] * a.alpha;
+        }
+      }
+
+      // Variância pela matriz: σ²p = ΣΣ wi wj ρij σi σj
+      let varP = 0, somaCorr = 0, contaCorr = 0;
+      for (let i = 0; i < n; i++) {
+        const vi = this.volDe(itens[i]) || 0;
+        for (let j = 0; j < n; j++) {
+          const vj = this.volDe(itens[j]) || 0;
+          const c = this._corr(itens[i], itens[j]);
+          varP += w[i] * w[j] * c * vi * vj;
+          if (j > i) { somaCorr += c; contaCorr++; }
+        }
+      }
+      const vol = Math.sqrt(Math.max(varP, 0));
+      const rf = this.risco.meta.rf_hoje;
+
+      // Tracking error contra o benchmark COMPOSTO (pesoAcoes em Ibov, resto em
+      // CDI). Cov(Rp, Ibov) = βp·σ²ibov e o CDI tem variância desprezível, então
+      // TE² = σ²p − 2·a·βp·σ²ibov + a²·σ²ibov.
+      const volIbov = this.risco.benchmarks['^BVSP'].vol;
+      const a = pesoAcoes;
+      const te = Math.sqrt(Math.max(varP - 2 * a * beta * volIbov * volIbov + a * a * volIbov * volIbov, 0));
+
+      return {
+        ret, vol, beta, alpha, te, pesoAcoes,
+        sharpe: vol > 0 ? (ret - rf) / vol : null,
+        corrMedia: contaCorr ? somaCorr / contaCorr : 0,
+        beneficioDiversificacao: somaVol > 0 ? 1 - vol / somaVol : 0,
+        premioNegativo: this.risco.meta.premio_risco_janela < 0,
+      };
+    },
+
+    get indicadoresCards() {
+      const m = this.metricas;
+      if (!m) return [];
+      const rf = this.risco.meta.rf_hoje;
+      return [
+        { rot: 'Retorno esperado', val: this.fmtPct(m.ret), cor: 'text-gold-400',
+          nota: `CDI hoje: ${this.fmtPct(rf)}` },
+        { rot: 'Volatilidade', val: this.fmtPct(m.vol), cor: m.vol > 0.25 ? 'text-amber-400' : 'text-paper-50',
+          nota: this.carteiraModo === 'carrego' ? 'títulos carregados não oscilam' : 'títulos marcados a mercado' },
+        { rot: 'Sharpe esperado', val: m.sharpe == null ? '—' : this.fmt(m.sharpe),
+          cor: m.sharpe > 0.5 ? 'text-emerald-400' : m.sharpe > 0 ? 'text-paper-50' : 'text-red-400',
+          nota: 'retorno acima do CDI por unidade de risco' },
+        { rot: 'Beta', val: this.fmt(m.beta), cor: 'text-paper-50',
+          nota: 'sensibilidade ao Ibovespa' },
+        { rot: 'Alpha de Jensen', val: this.fmtPct(m.alpha),
+          cor: m.alpha > 0 ? 'text-emerald-400' : 'text-red-400',
+          nota: `histórico, janela de ${this.risco.meta.janela_anos} anos` },
+        { rot: 'Tracking error', val: this.fmtPct(m.te), cor: 'text-paper-50',
+          nota: 'desvio ante o benchmark composto' },
+        { rot: 'Ações / Renda fixa', val: `${this.fmt(m.pesoAcoes * 100, 0)} / ${this.fmt((1 - m.pesoAcoes) * 100, 0)}`,
+          cor: 'text-paper-50', nota: 'divisão da carteira' },
+        { rot: 'Retorno real esperado', val: this.fmtPct((1 + m.ret) / (1 + this.risco.meta.inflacao_implicita) - 1),
+          cor: 'text-gold-400',
+          nota: `acima da inflação implícita de ${this.fmtPct(this.risco.meta.inflacao_implicita)}` },
+      ];
+    },
+
+    get paresAltos() {
+      if (!this.risco || this.carteira.length < 2) return [];
+      const out = [];
+      for (let i = 0; i < this.carteira.length; i++) {
+        for (let j = i + 1; j < this.carteira.length; j++) {
+          const c = this._corr(this.carteira[i], this.carteira[j]);
+          if (c >= 0.75) out.push({ a: this.carteira[i].nome, b: this.carteira[j].nome, c });
+        }
+      }
+      return out.sort((x, y) => y.c - x.c).slice(0, 8);
+    },
+
+    get composicaoClasses() {
+      const w = this.pesos, out = {};
+      this.carteira.forEach((c, i) => {
+        const k = c.tipo === 'acao' ? c.sub : `Tesouro ${this._titulos[c.id].indexador}`;
+        out[k] = (out[k] || 0) + w[i];
+      });
       return out;
+    },
+
+    // --- gráfico de retorno acumulado ---
+    _serieMensal(c, meses) {
+      if (c.tipo === 'acao') return this.mensalHist.series[c.id] || null;
+      const s = this.tesouroHist.series[c.id];
+      if (!s) return null;
+      const m = new Map(this.tesouroHist.meses.map((mm, i) => [mm, s[i]]));
+      return meses.map(mm => (m.has(mm) ? m.get(mm) : null));
+    },
+
+    get grafico() {
+      if (!this.risco || !this.mensalHist || !this.carteira.length) return null;
+      const meses = this.mensalHist.meses, w = this.pesos;
+      const vals = this.carteira.map(c => this._serieMensal(c, meses));
+      if (vals.some(v => !v)) return null;
+
+      // A janela começa quando TODOS os ativos escolhidos já têm série — não dá
+      // para simular carteira em mês onde um dos ativos não existia.
+      let ini = -1;
+      for (let i = 0; i < meses.length; i++) {
+        if (vals.every(v => v[i] != null)) { ini = i; break; }
+      }
+      if (ini < 0 || ini > meses.length - 3) return null;
+
+      const acumular = arr => {
+        const out = [100];
+        for (let i = ini + 1; i < meses.length; i++) {
+          const a = arr[i - 1], b = arr[i];
+          const r = a != null && b != null && a > 0 ? b / a - 1 : 0;
+          out.push(out[out.length - 1] * (1 + r));
+        }
+        return out;
+      };
+
+      // Carteira: retorno mensal ponderado (rebalanceamento mensal).
+      const cart = [100];
+      for (let i = ini + 1; i < meses.length; i++) {
+        let r = 0;
+        for (let k = 0; k < vals.length; k++) {
+          const a = vals[k][i - 1], b = vals[k][i];
+          r += w[k] * (a != null && b != null && a > 0 ? b / a - 1 : 0);
+        }
+        cart.push(cart[cart.length - 1] * (1 + r));
+      }
+
+      const linhas = [{ nome: 'Carteira', cor: '#D4B35C', vals: cart, largura: 2.5 }];
+      const bench = [['Ibovespa', '^BVSP', '#6B4FB8'], ['CDI', 'CDI', '#34d399'],
+        ['IPCA', 'IPCA', '#f87171'], ['IFIX', 'XFIX11', '#60a5fa']];
+      for (const [nome, chave, cor] of bench) {
+        const s = this.mensalHist.series[chave];
+        // Benchmark sem dado no início da janela ficaria como linha reta falsa.
+        if (!s || s[ini] == null) continue;
+        linhas.push({ nome, cor, vals: acumular(s), largura: 1.5 });
+      }
+
+      const todos = linhas.flatMap(l => l.vals);
+      const lo = Math.min(...todos), hi = Math.max(...todos);
+      const pad = (hi - lo) * 0.08 || 1;
+      const y0 = lo - pad, y1 = hi + pad;
+      const n = cart.length;
+      const X = i => 46 + (712 - 46) * (n > 1 ? i / (n - 1) : 0);
+      const Y = v => 235 - (235 - 12) * ((v - y0) / (y1 - y0));
+
+      for (const l of linhas) {
+        l.d = l.vals.map((v, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join(' ');
+        l.total = l.vals[l.vals.length - 1] / 100 - 1;
+      }
+      // O SVG é montado como STRING e injetado com x-html. Não dá para usar
+      // <template x-for> dentro de <svg>: o parser de HTML trata <template> em
+      // conteúdo estrangeiro como elemento SVG comum, sem .content, e o x-for do
+      // Alpine quebra silenciosamente — renderiza só o primeiro filho literal.
+      const grade = [0, 0.25, 0.5, 0.75, 1].map(p => {
+        const v = y0 + (y1 - y0) * p;
+        const pct = (v / 100 - 1) * 100;
+        return { y: Y(v), txt: `${pct >= 0 ? '+' : ''}${pct.toFixed(0)}%` };
+      });
+
+      const svg = '<svg viewBox="0 0 720 250" class="w-full h-auto" style="max-height:300px">'
+        + grade.map(g => `<line x1="46" x2="712" y1="${g.y.toFixed(1)}" y2="${g.y.toFixed(1)}"`
+          + ' stroke="currentColor" stroke-width="0.5" opacity="0.15"/>'
+          + `<text x="42" y="${(g.y + 3).toFixed(1)}" text-anchor="end" font-size="10"`
+          + ` fill="currentColor" opacity="0.5">${g.txt}</text>`).join('')
+        + linhas.map(l => `<path d="${l.d}" fill="none" stroke="${l.cor}" stroke-width="${l.largura}"`
+          + ' stroke-linejoin="round" stroke-linecap="round"/>').join('')
+        + '</svg>';
+
+      return { linhas, svg, de: meses[ini], ate: meses[meses.length - 1], recorte: ini > 0 };
+    },
+
+    // --- fronteira eficiente ---
+    // Nuvem de Monte Carlo: pesos aleatórios uniformes no simplex (Dirichlet via
+    // exponenciais), com teto por ativo. Sem o teto, os melhores pontos são
+    // sempre "tudo num papel só" — o artefato clássico de Markowitz com erro de
+    // estimativa nos retornos esperados.
+    get fronteira() {
+      if (!this.risco || this.carteira.length < 2) return null;
+      const chave = JSON.stringify([this.carteira.map(c => c.id), this.carteiraModo, this.pesos]);
+      if (this._fkey === chave) return this._fcache;
+
+      const itens = this.carteira, n = itens.length;
+      const rets = itens.map(c => this.retEsperadoDe(c) || 0);
+      const vols = itens.map(c => this.volDe(c) || 0);
+      const C = itens.map(a => itens.map(b => this._corr(a, b)));
+      const rf = this.risco.meta.rf_hoje;
+      const teto = Math.max(0.4, 1.6 / n);
+
+      const calc = w => {
+        let r = 0, v = 0;
+        for (let i = 0; i < n; i++) r += w[i] * rets[i];
+        for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) v += w[i] * w[j] * C[i][j] * vols[i] * vols[j];
+        return { r, v: Math.sqrt(Math.max(v, 0)), w };
+      };
+
+      const pts = [];
+      const alvo = 2500;
+      for (let k = 0; k < alvo * 6 && pts.length < alvo; k++) {
+        let w = [], s = 0;
+        for (let i = 0; i < n; i++) { const x = -Math.log(1 - Math.random()); w.push(x); s += x; }
+        w = w.map(x => x / s);
+        if (w.some(x => x > teto)) continue;
+        pts.push(calc(w));
+      }
+      if (!pts.length) return null;
+
+      const atual = calc(this.pesos);
+      let minVar = pts[0], maxSharpe = pts[0], melhorS = -Infinity;
+      for (const p of pts) {
+        if (p.v < minVar.v) minVar = p;
+        const sh = p.v > 0 ? (p.r - rf) / p.v : -Infinity;
+        if (sh > melhorS) { melhorS = sh; maxSharpe = p; }
+      }
+
+      const todosV = pts.map(p => p.v).concat(atual.v);
+      const todosR = pts.map(p => p.r).concat(atual.r);
+      const vlo = Math.min(...todosV), vhi = Math.max(...todosV);
+      const rlo = Math.min(...todosR), rhi = Math.max(...todosR);
+      const px = (vhi - vlo) * 0.1 || 0.01, py = (rhi - rlo) * 0.1 || 0.01;
+      const X = v => 46 + (700 - 46) * ((v - (vlo - px)) / ((vhi + px) - (vlo - px)));
+      const Y = r => 300 - (300 - 20) * ((r - (rlo - py)) / ((rhi + py) - (rlo - py)));
+
+      // Borda superior: em cada faixa de risco, o maior retorno alcançável.
+      const faixas = 44, melhores = new Array(faixas).fill(null);
+      for (const p of pts) {
+        const b = Math.min(faixas - 1, Math.floor((p.v - vlo) / ((vhi - vlo) || 1) * faixas));
+        if (!melhores[b] || p.r > melhores[b].r) melhores[b] = p;
+      }
+      const borda = melhores.filter(Boolean)
+        .map((p, i) => `${i ? 'L' : 'M'}${X(p.v).toFixed(1)} ${Y(p.r).toFixed(1)}`).join(' ');
+
+      const comp = p => itens.map((c, i) => ({ n: c.nome, w: p.w[i] }))
+        .sort((a, b) => b.w - a.w).slice(0, 3)
+        .map(x => `${x.n} ${(x.w * 100).toFixed(0)}%`).join(' · ');
+
+      // Mesmo motivo do gráfico de retorno: SVG montado como string e injetado
+      // com x-html, porque <template x-for> não funciona dentro de <svg>.
+      let eixos = '';
+      for (let i = 0; i <= 4; i++) {
+        const v = (vlo - px) + ((vhi + px) - (vlo - px)) * i / 4;
+        const r = (rlo - py) + ((rhi + py) - (rlo - py)) * i / 4;
+        eixos += `<line x1="${X(v).toFixed(1)}" x2="${X(v).toFixed(1)}" y1="20" y2="300"`
+          + ' stroke="currentColor" stroke-width="0.5" opacity="0.15"/>'
+          + `<text x="${X(v).toFixed(1)}" y="316" text-anchor="middle" font-size="10"`
+          + ` fill="currentColor" opacity="0.5">${(v * 100).toFixed(0)}%</text>`
+          + `<line x1="46" x2="700" y1="${Y(r).toFixed(1)}" y2="${Y(r).toFixed(1)}"`
+          + ' stroke="currentColor" stroke-width="0.5" opacity="0.15"/>'
+          + `<text x="42" y="${(Y(r) + 3).toFixed(1)}" text-anchor="end" font-size="10"`
+          + ` fill="currentColor" opacity="0.5">${(r * 100).toFixed(0)}%</text>`;
+      }
+      eixos += '<text x="373" y="334" text-anchor="middle" font-size="10" fill="currentColor"'
+        + ' opacity="0.5">risco (volatilidade anual) →</text>';
+
+      const nuvem = pts.map(p => `M${X(p.v).toFixed(1)} ${Y(p.r).toFixed(1)}l0.01 0`).join('');
+      const marco = (p, cor, raio, preenche) =>
+        `<circle cx="${X(p.v).toFixed(1)}" cy="${Y(p.r).toFixed(1)}" r="${raio}"`
+        + ` fill="${preenche ? cor : 'none'}" stroke="${preenche ? '#0A0E27' : cor}" stroke-width="${preenche ? 1.5 : 2.5}"/>`;
+
+      const svg = '<svg viewBox="0 0 720 340" class="w-full h-auto" style="max-height:340px">'
+        + eixos
+        + `<path d="${nuvem}" stroke="#6B4FB8" stroke-width="3" stroke-linecap="round" opacity="0.35" fill="none"/>`
+        + `<path d="${borda}" stroke="#D4B35C" stroke-width="2" fill="none" opacity="0.9"/>`
+        + marco(minVar, '#34d399', 5, true)
+        + marco(maxSharpe, '#F2DC9F', 5, true)
+        + marco(atual, '#f87171', 6, false)
+        + '</svg>';
+
+      this._fkey = chave;
+      this._fcache = {
+        n: pts.length, teto, svg,
+        destaques: [
+          { rot: 'Sua carteira', cor: '#f87171', r: atual.r, v: atual.v,
+            sharpe: atual.v > 0 ? (atual.r - rf) / atual.v : null, composicao: null },
+          { rot: 'Menor risco possível', cor: '#34d399', r: minVar.r, v: minVar.v,
+            sharpe: minVar.v > 0 ? (minVar.r - rf) / minVar.v : null, composicao: comp(minVar) },
+          { rot: 'Melhor Sharpe', cor: '#F2DC9F', r: maxSharpe.r, v: maxSharpe.v,
+            sharpe: melhorS, composicao: comp(maxSharpe) },
+        ],
+      };
+      return this._fcache;
     },
 
     // === FORMATAÇÃO ===
