@@ -1,6 +1,6 @@
 {
   "meta": {
-    "gerado_em": "2026-10-13T02:46:40.079Z",
+    "gerado_em": "2026-10-14T00:44:52.122Z",
     "total_ativos": 62,
     "setores": {
       "Bancos": 7,
@@ -18,7 +18,7 @@
     "fonte": "Fundamentus (cotação de fechamento + fundamentos) com fallback de preço no Yahoo Finance — auto",
     "versao": "2.3.0",
     "aviso": "Cotação e fundamentos do último fechamento disponível no Fundamentus. Growth, Retorno esperado e Dividendos são calculados ao vivo (Growth = ROE×(1−Payout); Dividendos = Lucro×Payout; Retorno = DY+Growth). Histórico de dividendos 5 anos ainda é snapshot manual.",
-    "fechamento_referencia": "2026-10-12"
+    "fechamento_referencia": "2026-10-13"
   },
   "stocks": [
     {
@@ -802,8 +802,8 @@
       "empresa": "JBS",
       "descricao_longa": null,
       "setor": "Consumo Básico",
-      "preco": 64.19,
-      "preco_minimo_52s": 0,
+      "preco": 65.3,
+      "preco_minimo_52s": 55.44,
       "patrimonio_liquido_bi": 9.51,
       "roe": 0.21530000000000002,
       "lucro_bi": 2.05,
@@ -1166,23 +1166,23 @@
       "empresa": "BrasilAgro",
       "descricao_longa": null,
       "setor": "Agronegócio",
-      "preco": 19.08,
+      "preco": 19.17,
       "preco_minimo_52s": 17.54,
       "patrimonio_liquido_bi": 2.025,
       "roe": -0.044,
       "lucro_bi": -0.09,
       "payout": -3.2604,
       "dividendos_bi": 0.293436,
-      "valor_mercado_bi": 1.959,
+      "valor_mercado_bi": 1.968,
       "p_vp": 0.97,
-      "p_l": -21.77,
+      "p_l": -21.87,
       "dy": 0.039,
       "growth": -0.187458,
       "retorno": -0.148458,
       "roic": -0.013,
-      "ev_ebitda": 90.69,
+      "ev_ebitda": 90.95,
       "marg_liquida": -0.097,
-      "div_liq_ebitda": 35.272592
+      "div_liq_ebitda": 35.272064
     },
     {
       "ativo": "JALL3",
@@ -1327,23 +1327,23 @@
       "empresa": "Arezzo",
       "descricao_longa": null,
       "setor": "Consumo Cíclico",
-      "preco": 26.2,
+      "preco": 25.3,
       "preco_minimo_52s": 14.3,
       "patrimonio_liquido_bi": 8.04,
       "roe": 0.04,
       "lucro_bi": 0.324,
-      "payout": 1.568662,
-      "dividendos_bi": 0.508246,
-      "valor_mercado_bi": 5.41,
-      "p_vp": 0.67,
-      "p_l": 16.69,
-      "dy": 0.094,
-      "growth": -0.022746,
-      "retorno": 0.071254,
+      "payout": 1.579236,
+      "dividendos_bi": 0.511672,
+      "valor_mercado_bi": 5.224,
+      "p_vp": 0.65,
+      "p_l": 16.12,
+      "dy": 0.098,
+      "growth": -0.023169,
+      "retorno": 0.074831,
       "roic": 0.059,
-      "ev_ebitda": 5.26,
+      "ev_ebitda": 5.13,
       "marg_liquida": 0.029,
-      "div_liq_ebitda": 1.48679
+      "div_liq_ebitda": 1.486678
     },
     {
       "ativo": "RENT3",
